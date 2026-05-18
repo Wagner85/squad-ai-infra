@@ -96,7 +96,8 @@ Before executing any step that references an agent:
    - The file uses YAML frontmatter for metadata and markdown body for depth
    - The markdown body contains: Operational Framework, Output Examples, Anti-Patterns, Voice Guidance
    - All agents are complete `.agent.md` files with full definitions — no overlay resolution needed
-3. When executing the step, the agent's full definition informs behavior:
+2b. **Inject Global Guardrails**: Read the core rules from `_squad-ai/core/prompts/global_guardrails.md`. Append this Markdown content immediately after the agent's markdown body. This guarantees that all agents inherit the standard Chain of Thought, Anti-Hallucination, and Zero-Shot Scripting frameworks globally without duplicating them across `.agent.md` files, optimizing the token footprint.
+3. When executing the step, the agent's full definition + global guardrails informs behavior:
    - Follow the Operational Framework's process steps
    - Use Output Examples as quality reference
    - Avoid Anti-Patterns listed in the agent definition
@@ -129,7 +130,7 @@ Before executing any step that references an agent:
 
    The final agent context composition order is:
    ```
-   Agent (.agent.md) → Platform Best Practices → Skill Instructions
+   Agent (.agent.md) → Global Guardrails → Platform Best Practices → Skill Instructions
    ```
 
 ### Task-Based Agent Execution
@@ -259,13 +260,14 @@ Apply this transformation consistently for every write in this step.
   - If `model_tier: fast`: use the fastest/lightest model available in your current IDE.
   - If `model_tier: powerful` or absent/invalid: use the default model (no model override needed)
 - In the Task prompt, include:
-  - The full agent persona from the party CSV
-  - The full agent `.agent.md` content (persona, principles, voice guidance, anti-patterns)
-  - If the agent has tasks: include ALL task files in order with instructions to execute sequentially, piping output from each task to the next
-  - If the agent has no tasks: include the step instructions and operational framework as before
+  - **Prompt Caching Structure**: To maximize the effectiveness of LLM Prompt Caching, organize the prompt so that all static elements are placed at the beginning (prefix-stability) and dynamic elements at the end:
+    1. **[ESTÁTICO - CACHED]** Contexto da Empresa (`company.md`)
+    2. **[ESTÁTICO - CACHED]** Perfil do Agente (`.agent.md`) + Diretrizes Globais (`global_guardrails.md`) + Boas Práticas da Plataforma (`best-practices/`)
+    3. **[ESTÁTICO - CACHED]** Instruções das Skills (`skills/`)
+    4. **[DINÂMICO]** Memória do Squad (`memories.md`) e Histórico de Handoff
+    5. **[DINÂMICO]** Arquivo de Entrada (`inputFile` transformado) e Instruções Específicas do Passo
+    6. **[DINÂMICO]** Se o agente possui tarefas: incluir as tarefas (`tasks/`) e instruções de execução sequencial
   - The veto conditions from the step file (agent should self-check before completing)
-  - The company context
-  - The squad memory
   - The **transformed** path to save output (e.g., `squads/{name}/output/2026-03-20-140736/slides/v1/draft.md`)
   - **Progress Reporting**: Instruction to update `squads/{name}/state.json` using the Write tool whenever starting a significant action (searching, writing a file, analyzing results). They should update the `step.label` with their current activity (e.g., "Sherlock: Researching autonomous agents...").
 - Wait for the subagent to complete

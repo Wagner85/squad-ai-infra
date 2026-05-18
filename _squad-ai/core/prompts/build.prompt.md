@@ -106,10 +106,17 @@ Generate these files. Use the Write tool for all file creation — never use Bas
 
 All agents are created as full `.agent.md` files (never `.custom.md`).
 No `base_agent` field in frontmatter.
-Every agent file must include ALL required sections.
+Every agent file must include ALL required sections, but **MUST OMIT** generic boilerplates like *Processo de Pensamento (Chain of Thought)*, *Proteção Anti-Alucinação*, and *Autonomia (Zero-Shot)*. These static blocks are now inherited and injected dynamically by the Pipeline Runner from the global `global_guardrails.md` configuration. This slashes file sizes, reduces generated token counts, and eliminates redundant maintenance.
+
 Use knowledge from the best-practices files to write sections with high quality.
 
 The squad-party.csv `path` column points to: `./agents/{agent-id}.agent.md`
+
+#### Modular Generation Strategy (Map-Reduce & Tier Optimization)
+To avoid hitting output length constraints (max output tokens) and reduce API costs, the Build Agent must execute as follows:
+1. **Parallel Dispatch**: Do NOT write all `.agent.md` and task files in a single LLM response. Generate only the squad orchestration files (`squad.yaml`, `squad-party.csv`, `pipeline.yaml`) in the main call.
+2. **Fast Tier Subagents**: Delegate the generation of each individual `.agent.md` and task file to dedicated subagent calls running in the `fast` model tier (e.g. `gemini-2.0-flash`).
+3. **Targeted Output**: Each subagent writes one agent's assets, keeping each output under 1,000 tokens for absolute stability.
 
 If the agent includes `tasks:` in its frontmatter, ALSO create all referenced task files at `squads/{code}/agents/{agent-id}/tasks/{task}.md` — one file per entry in the `tasks:` list. These files are REQUIRED for the pipeline runner to execute the agent. Never add `tasks:` to the frontmatter without also creating the actual task files.
 

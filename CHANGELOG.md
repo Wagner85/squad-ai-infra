@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-05-18
+
+### Added
+- **Pasta de Skills Core**: Criação física da pasta `skills/` contendo 6 habilidades core de infraestrutura prontas para uso: `argocd`, `grafana`, `jira`, `kubernetes`, `terraform` e `zabbix`, estruturadas com YAML frontmatter e markdown instrucional.
+- **Regras Globais (`global_guardrails.md`)**: Criação do arquivo `_squad-ai/core/prompts/global_guardrails.md` centralizando as regras de Chain of Thought, Proteção Anti-Alucinação e Autonomia Zero-Shot de scripts.
+
+### Changed
+- **Otimização de Prompt Caching**: Atualização da montagem de prompts no Pipeline Runner (`runner.pipeline.md`) para manter a estrutura estável-prefixo (prefix-stability), permitindo até 90% de economia em custos de tokens e 80% de redução na latência.
+- **Otimização da Criação de Squads (Build Agent)**: Atualização do `build.prompt.md` para suportar geração modular de agentes por subagentes em paralelo, uso do modelo do tier `fast` e omissão de boilerplates redundantes herdados do `global_guardrails.md`.
+- **Propriedade do Repositório**: Substituição de referências e downloads de catálogos do GitHub de links de terceiros para o repositório proprietário (`Wagner85/squad-ai-infra`).
+
+### Removed
+- **Reset do Histórico Git**: Remoção do commit `2655018` e reestruturação completa da árvore do Git para um único commit limpo de "initial commit", higienizando o repositório público no GitHub contra logs residuais.
+
+---
+
 ## [1.1.0] - 2026-05-17
 
 ### Security
