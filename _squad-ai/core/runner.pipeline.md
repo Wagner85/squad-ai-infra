@@ -104,15 +104,20 @@ Before executing any step that references an agent:
    - Apply Voice Guidance (vocabulary always/never use, tone rules)
 4. **Inject format context**: Check if the current step's frontmatter contains a `format:` field.
    If present:
-   a. Read `_squad-ai/core/best-practices/{format}.md` (e.g., `_squad-ai/core/best-practices/instagram-feed.md`)
+   a. Parse the `format:` value. It may contain an **anchor fragment** for lazy loading:
+      - `format: data-analysis` → Load the entire `data-analysis.md` file (full injection)
+      - `format: data-analysis#metrics-only` → Load ONLY the Markdown section headed `## Metrics Only` from `data-analysis.md` (lazy loading)
+   b. Read `_squad-ai/core/best-practices/{format-base}.md` (strip the `#fragment` if present)
       - If the file does not exist → **WARNING**: "Format '{format}' not found in _squad-ai/core/best-practices/. Skipping format injection." Continue without format.
-   b. Parse the YAML frontmatter to extract the `name` field
-   c. Extract the Markdown body (everything after the YAML frontmatter closing `---`)
-   d. Append to the agent's context, before skill instructions:
+   c. Parse the YAML frontmatter to extract the `name` field
+   d. Extract content:
+      - **Full injection** (no `#fragment`): Extract the entire Markdown body (everything after the YAML frontmatter closing `---`)
+      - **Lazy loading** (has `#fragment`): Locate the `## {Fragment Title}` heading (case-insensitive match of the fragment, replacing hyphens with spaces) and extract only that section up to the next `##` heading or end-of-file. This dramatically reduces token consumption for large best-practices files (e.g., `data-analysis.md` at 30 KB can be reduced to 2-4 KB per section).
+   e. Append to the agent's context, before skill instructions:
       ```
       --- FORMAT: {name from frontmatter} ---
 
-      {format file markdown body}
+      {extracted content (full or section)}
       ```
    If the step has no `format:` field, skip this step entirely (backward compatible).
 5. **Inject skill instructions**: Check which skills the agent declares in its frontmatter `skills:`.
@@ -127,10 +132,20 @@ Before executing any step that references an agent:
       {SKILL.md markdown body}
       ```
    d. Follow declaration order in the agent's frontmatter for multi-skill injection
+6. **Inject agent references**: Check if the agent's frontmatter contains a `references:` field.
+   For each reference declared:
+   a. Read the file from the agent's directory (e.g., `squads/{squad}/agents/{reference-path}`)
+   b. Append the full Markdown content to the agent's context after skill instructions:
+      ```
+      --- REFERENCE: {filename} ---
+
+      {reference file markdown body}
+      ```
+   References are loaded lazily — only when the agent is activated for a step, not at pipeline initialization.
 
    The final agent context composition order is:
    ```
-   Agent (.agent.md) → Global Guardrails → Platform Best Practices → Skill Instructions
+   Agent (.agent.md) → Global Guardrails → Platform Best Practices → Skill Instructions → Agent References
    ```
 
 ### Task-Based Agent Execution

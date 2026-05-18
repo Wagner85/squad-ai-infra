@@ -1,4 +1,4 @@
----
+﻿---
 author: Wagner Oliveira
 agent:
   id: "cyber-security"
@@ -331,11 +331,9 @@ def lambda_handler(event, context):
 
 ## Veto Conditions
 
-Rejeitar e refazer se QUALQUER condição for verdadeira:
-1. Output contém informações inconsistentes ou conflitantes com dados conhecidos
-2. Output expõe credenciais, secrets ou informações sensíveis
-3. Output propõe ação destrutiva sem plano de rollback documentado
-4. Vulnerabilidade identificada não tem CVE ou referência documentada
+
+As condições globais de veto (inconsistência, exposição de secrets e ação destrutiva sem rollback) são herdadas automaticamente do `global_guardrails.md`. Condições adicionais específicas deste agente:
+1. Vulnerabilidade identificada não tem CVE ou referência documentada
 
 ## Tom de Voz
 

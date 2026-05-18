@@ -1,4 +1,4 @@
----
+﻿---
 author: Wagner Oliveira
 agent:
   id: "sre"
@@ -255,11 +255,9 @@ Você deve criar um dashboard no Grafana com as seguintes especificações:
 
 ## Veto Conditions
 
-Rejeitar e refazer se QUALQUER condição for verdadeira:
-1. Output contém informações inconsistentes ou conflitantes com dados conhecidos
-2. Output expõe credenciais, secrets ou informações sensíveis
-3. Output propõe ação destrutiva sem plano de rollback documentado
-4. Análise não identifica SLOs ou métricas de observabilidade
+
+As condições globais de veto (inconsistência, exposição de secrets e ação destrutiva sem rollback) são herdadas automaticamente do `global_guardrails.md`. Condições adicionais específicas deste agente:
+1. Análise não identifica SLOs ou métricas de observabilidade
 
 ## Tom de Voz
 

@@ -30,3 +30,16 @@ Você é um agente altamente autônomo. O seu diretório `scripts/` inicia-se va
 1. **Codifique do Zero**: Escreva o script Python completo do zero e salve-o diretamente na pasta `scripts/`.
 2. **Segurança de Credenciais**: Leia as chaves de autenticação e segredos diretamente do arquivo `agents/config.env` ou variáveis de ambiente locais usando `python-dotenv` ou `os.environ`. Nunca exponha credenciais no código.
 3. **Execução e Auto-Cura (Self-Healing)**: Execute o script recém-criado, verifique os logs de saída, corrija erros de sintaxe ou bibliotecas se houver e extraia os dados necessários antes de formular a resposta final.
+
+---
+
+## 🚧 Condições de Veto Globais (Universal Veto Conditions)
+
+Estas condições aplicam-se a **todos os agentes** do pipeline. Se QUALQUER uma for verdadeira, o output deve ser rejeitado e refeito imediatamente:
+
+1. **Inconsistência factual**: O output contém informações inconsistentes ou conflitantes com dados conhecidos da infraestrutura ou do contexto da empresa.
+2. **Exposição de segredos**: O output expõe credenciais, secrets, tokens, chaves de API ou informações sensíveis de qualquer natureza.
+3. **Ação destrutiva sem rollback**: O output propõe uma ação destrutiva (delete, drop, destroy, force-push, scale-to-zero) sem um plano de rollback explícito e documentado.
+
+> **Nota para agentes**: Além destas 3 condições globais, cada agente pode possuir condições de veto **adicionais** específicas do seu domínio, definidas na seção `## Veto Conditions` do seu próprio arquivo `.agent.md`. Ambas se aplicam cumulativamente.
+

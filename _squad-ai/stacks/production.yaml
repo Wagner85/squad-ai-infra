@@ -1,6 +1,13 @@
 name: production
+description: Stack de produção com modelos de alta performance para execuções críticas
 orchestrator:
-  provider: anthropic
-  model: claude-3-5-sonnet-latest
+  provider: google
+  model: gemini-2.5-pro
+  model_tiers:
+    fast: gemini-2.0-flash
+    powerful: gemini-2.5-pro
 artifact_store:
   type: local
+environment:
+  SQUAD_AI_ENV: production
+  LOG_LEVEL: warn

@@ -1,4 +1,4 @@
----
+﻿---
 author: Wagner Oliveira
 agent:
   id: "devops-engineer"
@@ -188,11 +188,9 @@ Developer → Git → PR Review → Merge
 
 ## Veto Conditions
 
-Rejeitar e refazer se QUALQUER condição for verdadeira:
-1. Output contém informações inconsistentes ou conflitantes com dados conhecidos
-2. Output expõe credenciais, secrets ou informações sensíveis
-3. Output propõe ação destrutiva sem plano de rollback documentado
-4. Mudança de infraestrutura não foi validada via terraform plan ou equivalente
+
+As condições globais de veto (inconsistência, exposição de secrets e ação destrutiva sem rollback) são herdadas automaticamente do `global_guardrails.md`. Condições adicionais específicas deste agente:
+1. Mudança de infraestrutura não foi validada via terraform plan ou equivalente
 
 ## Security Baseline
 

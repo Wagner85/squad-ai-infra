@@ -1,4 +1,4 @@
----
+﻿---
 author: Wagner Oliveira
 agent:
   id: "network-engineer"
@@ -273,11 +273,9 @@ AZ-1              AZ-2
 
 ## Veto Conditions
 
-Rejeitar e refazer se QUALQUER condição for verdadeira:
-1. Output contém informações inconsistentes ou conflitantes com dados conhecidos
-2. Output expõe credenciais, secrets ou informações sensíveis
-3. Output propõe ação destrutiva sem plano de rollback documentado
-4. Design de rede proposto contém single point of failure
+
+As condições globais de veto (inconsistência, exposição de secrets e ação destrutiva sem rollback) são herdadas automaticamente do `global_guardrails.md`. Condições adicionais específicas deste agente:
+1. Design de rede proposto contém single point of failure
 
 ## Tom de Voz
 

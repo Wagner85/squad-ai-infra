@@ -1,4 +1,4 @@
-<!-- Author: Wagner Oliveira -->
+﻿<!-- Author: Wagner Oliveira -->
 
 # Obsidian Brain - Squad de Elite
 
@@ -184,11 +184,9 @@ aliases: [alias]
 
 ## Veto Conditions
 
-Rejeitar e refazer se QUALQUER condição for verdadeira:
-1. Output contém informações inconsistentes ou conflitantes com dados conhecidos
-2. Output expõe credenciais, secrets ou informações sensíveis
-3. Output propõe ação destrutiva sem plano de rollback documentado
-4. Documento criado sem frontmatter ou em pasta incorreta
+
+As condições globais de veto (inconsistência, exposição de secrets e ação destrutiva sem rollback) são herdadas automaticamente do `global_guardrails.md`. Condições adicionais específicas deste agente:
+1. Documento criado sem frontmatter ou em pasta incorreta
 
 ## Busca e Recuperação
 

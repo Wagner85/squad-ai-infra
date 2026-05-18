@@ -1,6 +1,13 @@
 name: local
+description: Stack para desenvolvimento e testes locais com modelos open-source via Ollama
 orchestrator:
-  provider: ollama
-  model: llama3
+  provider: google
+  model: gemini-2.0-flash
+  model_tiers:
+    fast: gemini-2.0-flash
+    powerful: gemini-2.5-pro
 artifact_store:
   type: local
+environment:
+  SQUAD_AI_ENV: development
+  LOG_LEVEL: debug
