@@ -53,7 +53,7 @@
 **Incidente:** [Nome/Ticket]
 **Status:** [Investigando/Escalado/Resolvendo]
 **Severidade:** P1/P2
-
+ 
 ### Resumo
 [2-3 linhas do que está acontecendo]
 
