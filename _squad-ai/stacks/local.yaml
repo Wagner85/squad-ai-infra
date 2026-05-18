@@ -1,0 +1,6 @@
+name: local
+orchestrator:
+  provider: ollama
+  model: llama3
+artifact_store:
+  type: local

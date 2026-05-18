@@ -1,0 +1,6 @@
+name: production
+orchestrator:
+  provider: anthropic
+  model: claude-3-5-sonnet-latest
+artifact_store:
+  type: local

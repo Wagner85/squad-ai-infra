@@ -1,0 +1,30 @@
+# Company Context — Exemplo / Template
+
+<!--
+  ESTE ARQUIVO É UM EXEMPLO — NÃO SERÁ VERSIONADO (ver .gitignore)
+  Copie para: _squad-ai/_memory/company.md
+  e preencha com os dados reais da sua empresa.
+-->
+
+## Empresa
+- **Nome:** Sua Empresa Ltda
+- **Setor:** Tecnologia / Infraestrutura em Nuvem
+- **URL:** https://www.suaempresa.com
+
+## Audiência-Alvo
+- Times de DevOps e SRE internos
+- Clientes enterprise que usam nossa plataforma de observabilidade
+
+## Produtos e Serviços
+- Plataforma de monitoramento de infra em cloud (AWS/Azure/GCP)
+- Serviços gerenciados de Kubernetes
+- Consultoria em Platform Engineering
+
+## Voz e Tom
+- Técnico e direto ao ponto
+- Orientado a dados e métricas
+- Sem jargão desnecessário
+
+## Redes Sociais
+- GitHub: https://github.com/suaempresa
+- LinkedIn: https://linkedin.com/company/suaempresa

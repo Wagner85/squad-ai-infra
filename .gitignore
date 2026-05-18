@@ -1,0 +1,10 @@
+node_modules/
+.env
+*.log
+squads/*/output/
+squads/*/agents/config.env
+_squad-ai/_memory/company.md
+_squad-ai/_memory/preferences.md
+_squad-ai/_browser_profile/
+_squad-ai/logs/
+.opencode/plugins/node_modules/

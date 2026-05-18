@@ -1,0 +1,36 @@
+---
+description: Squad-AI Infraestrutura — regras globais para agentes AI
+alwaysApply: true
+---
+
+# Squad-AI — Regras Globais (Cursor)
+
+Você está num projeto de orquestração multi-agente para infraestrutura.
+
+## Inicialização obrigatória
+
+Leia **AGENTS.md** por completo ao iniciar. Ele contém o roteamento completo de comandos, fluxo de onboarding e instruções do motor de pipeline.
+
+Depois leia:
+- `_squad-ai/_memory/company.md` — contexto da empresa
+- `_squad-ai/_memory/preferences.md` — preferências do usuário
+
+Se `company.md` tiver `<!-- NOT CONFIGURED -->`, inicie o onboarding.
+
+## Estrutura do projeto
+
+```
+_squad-ai/core/     → Motor: runner.pipeline.md, skills.engine.md
+squads/infra/       → Squad ativa (18 agentes, 6 estágios)
+  agents/           → arquivos .agent.md de cada agente
+  pipeline/         → pipeline.yaml + steps/
+  _memory/          → memories.md + runs.md
+```
+
+## Regras de execução
+
+- Comando `/squad-ai` → rota para AGENTS.md
+- NUNCA pule checkpoints
+- SEMPRE execute em Português Brasileiro (padrão)
+- Credenciais estão em `squads/infra/agents/config.env` (nunca no código)
+- Scripts de automação devem ser criados do zero em `squads/infra/scripts/`

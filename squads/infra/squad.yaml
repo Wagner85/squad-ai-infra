@@ -1,0 +1,27 @@
+---
+author: Wagner Oliveira
+squad: infra
+description: Squad de Infraestrutura - Alta Performance
+created: 2026-04-24
+agents:
+  - devops-engineer
+  - sre
+  - network-engineer
+  - cyber-security
+  - tech-lead
+  - solution-architect
+  - project-manager
+  - product-owner
+  - fullstack-dev
+  - data-engineer
+  - ai-automation
+  - docs
+  - l1-support
+  - report-master
+  - jira-reporter
+  - business-exec
+  - git-analyst
+  - obsidian-brain
+pipeline: infra-pipeline
+execution_mode: sequential
+output_dir: squads/infra/output

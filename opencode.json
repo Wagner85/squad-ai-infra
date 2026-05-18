@@ -1,0 +1,225 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "username": "Wagner Oliveira",
+  "instructions": [
+    "AGENTS.md"
+  ],
+  "disabled_providers": [],
+  "model": "google/gemini-2.0-flash",
+  "lsp": true,
+  "skills": {
+    "paths": [
+      ".opencode/skills"
+    ]
+  },
+  "mcp": {
+    "playwright": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@playwright/mcp"
+      ],
+      "enabled": true,
+      "env": {}
+    }
+  },
+  "agent": {
+    "obsidian-brain": {
+      "mode": "all",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow",
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "write": "allow"
+      }
+    },
+    "devops-engineer": {
+      "mode": "subagent",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow",
+        "read": "allow",
+        "write": "allow"
+      }
+    },
+    "sre": {
+      "mode": "subagent",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow",
+        "read": "allow",
+        "write": "allow"
+      }
+    },
+    "tech-lead": {
+      "mode": "subagent",
+      "permission": {
+        "edit": "allow",
+        "bash": "ask",
+        "read": "allow",
+        "write": "allow"
+      }
+    },
+    "l1-support": {
+      "mode": "subagent",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow",
+        "read": "allow",
+        "write": "allow"
+      }
+    },
+    "report-master": {
+      "mode": "subagent",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow",
+        "write": "allow",
+        "read": "allow"
+      }
+    },
+    "network-engineer": {
+      "mode": "subagent",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow",
+        "read": "allow",
+        "write": "allow"
+      }
+    },
+    "cyber-security": {
+      "mode": "subagent",
+      "permission": {
+        "edit": "allow",
+        "bash": "ask",
+        "read": "allow",
+        "write": "allow"
+      }
+    },
+    "solution-architect": {
+      "mode": "subagent",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow",
+        "read": "allow",
+        "write": "allow"
+      }
+    },
+    "project-manager": {
+      "mode": "subagent",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow",
+        "read": "allow",
+        "write": "allow"
+      }
+    },
+    "product-owner": {
+      "mode": "subagent",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow",
+        "read": "allow",
+        "write": "allow"
+      }
+    },
+    "fullstack-dev": {
+      "mode": "subagent",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow",
+        "read": "allow",
+        "write": "allow"
+      }
+    },
+    "data-engineer": {
+      "mode": "subagent",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow",
+        "read": "allow",
+        "write": "allow"
+      }
+    },
+    "ai-automation": {
+      "mode": "subagent",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow",
+        "read": "allow",
+        "write": "allow"
+      }
+    },
+    "docs": {
+      "mode": "subagent",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow",
+        "read": "allow",
+        "write": "allow"
+      }
+    },
+    "jira-reporter": {
+      "mode": "subagent",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow",
+        "read": "allow",
+        "write": "allow"
+      }
+    },
+    "business-exec": {
+      "mode": "subagent",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow",
+        "read": "allow",
+        "write": "allow"
+      }
+    },
+    "git-analyst": {
+      "mode": "subagent",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow",
+        "read": "allow",
+        "write": "allow"
+      }
+    }
+  },
+  "command": {
+    "squad-ai": {
+      "template": "You are the squad-ai system for this project. Read AGENTS.md in full and follow the initialization flow. Route the user's request to the correct squad-ai action: menu, create, run, list, edit, delete, skills, settings, or help.",
+      "description": "Gerencia e executa squads de agentes AI"
+    }
+  },
+  "permission": {
+    "edit": "allow",
+    "bash": {
+      "npx *": "allow",
+      "npm *": "allow",
+      "pip*": "allow",
+      "python*": "allow",
+      "node*": "allow",
+      "git *": "allow",
+      "New-Item*": "allow",
+      "Remove-Item*": "ask",
+      "Set-Content*": "allow",
+      "Get-ChildItem*": "allow",
+      "Get-Content*": "allow",
+      "*": "ask"
+    },
+    "read": "allow",
+    "glob": "allow",
+    "grep": "allow",
+    "write": "allow",
+    "webfetch": "allow",
+    "websearch": "allow",
+    "external_directory": {
+      "*": "ask"
+    }
+  }
+}

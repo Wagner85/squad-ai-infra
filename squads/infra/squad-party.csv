@@ -1,0 +1,19 @@
+path,displayName,icon,cell
+squads/infra/agents/devops-engineer.agent.md,DevOps Engineer,🔄,infrastructure
+squads/infra/agents/sre.agent.md,SRE Engineer,📈,infrastructure
+squads/infra/agents/network-engineer.agent.md,Network Engineer,🌐,infrastructure
+squads/infra/agents/cyber-security.agent.md,Cyber Security,🔐,seguranca
+squads/infra/agents/tech-lead.agent.md,Tech Lead,🏛️,engineering
+squads/infra/agents/solution-architect.agent.md,Solution Architect,📐,architecture
+squads/infra/agents/project-manager.agent.md,Project Manager,📊,gestao
+squads/infra/agents/product-owner.agent.md,Product Owner,🎯,produto
+squads/infra/agents/fullstack-dev.agent.md,Fullstack Dev,💻,development
+squads/infra/agents/data-engineer.agent.md,Data Engineer,🗄️,data
+squads/infra/agents/ai-automation.agent.md,AI Automation,🤖,automation
+squads/infra/agents/docs.agent.md,Docs Specialist,📝,docs
+squads/infra/agents/l1-support.agent.md,L1 Support,🎧,support
+squads/infra/agents/report-master.agent.md,Report Master,📈,reports
+squads/infra/agents/jira-reporter.agent.md,Jira Reporter,📋,reports
+squads/infra/agents/business-exec.agent.md,Business Exec,💼,business
+squads/infra/agents/git-analyst.agent.md,Git Analyst,🔀,development
+squads/infra/agents/obsidian-brain.agent.md,Obsidian Brain,🧠,knowledge

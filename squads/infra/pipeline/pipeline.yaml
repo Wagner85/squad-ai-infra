@@ -1,0 +1,56 @@
+---
+author: Wagner Oliveira
+pipeline:
+  id: infra-pipeline
+  name: Infra Pipeline
+  description: Pipeline de infraestrutura de alta performance — 6 estágios sequenciais
+  version: "1.1"
+
+stages:
+  - id: analysis
+    name: Analysis
+    description: Diagnóstico operacional — coleta de contexto, métricas e evidências
+    agent: sre
+    execution: subagent
+    outputFile: squads/infra/output/01-analysis.md
+
+  - id: planning
+    name: Planning
+    description: Planejamento técnico — arquitetura, riscos e estimativas
+    agent: solution-architect
+    execution: subagent
+    inputFile: squads/infra/output/01-analysis.md
+    outputFile: squads/infra/output/02-planning.md
+
+  - id: execution
+    name: Execution
+    description: Execução das tasks de infraestrutura conforme plano aprovado
+    agent: devops-engineer
+    execution: subagent
+    inputFile: squads/infra/output/02-planning.md
+    outputFile: squads/infra/output/03-execution.md
+
+  - id: security-review
+    name: Security Review
+    description: Revisão de segurança — compliance, IAM e vulnerabilidades
+    agent: cyber-security
+    execution: subagent
+    inputFile: squads/infra/output/03-execution.md
+    outputFile: squads/infra/output/04-security-review.md
+
+  - id: documentation
+    name: Documentation
+    description: Geração de runbooks, ADRs e documentação técnica
+    agent: docs
+    execution: subagent
+    inputFile: squads/infra/output/03-execution.md
+    outputFile: squads/infra/output/05-documentation.md
+
+  - id: review
+    name: Review
+    description: Revisão final técnica e validação de consistência
+    agent: tech-lead
+    execution: subagent
+    inputFile: squads/infra/output/05-documentation.md
+    outputFile: squads/infra/output/06-review.md
+    type: checkpoint

@@ -1,0 +1,24 @@
+# User Preferences — Exemplo / Template
+
+<!--
+  ESTE ARQUIVO É UM EXEMPLO — NÃO SERÁ VERSIONADO (ver .gitignore)
+  Copie para: _squad-ai/_memory/preferences.md
+  e preencha com suas preferências reais.
+-->
+
+## Usuário
+- **Nome:** Seu Nome
+- **Email:** seu@email.com
+
+## Idioma
+- **Idioma preferido para outputs:** Português Brasileiro
+
+## Ferramentas
+- **IDE:** OpenCode
+- **Provedor de LLM:** Anthropic (Claude) / Google (Gemini)
+- **Stack principal:** AWS, Kubernetes, Terraform
+
+## Preferências de Output
+- Respostas em markdown com tabelas
+- Exemplos de código sempre que possível
+- Seja direto — sem longas introduções
