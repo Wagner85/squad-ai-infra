@@ -44,7 +44,6 @@ O **Squad-AI | Infraestrutura** é um:
 | 18 Agentes especializados | ✅ | ✅ |
 | Condições de veto | ✅ | ✅ |
 | Memória aprendente | ✅ | ✅ |
-
 | Dashboard em tempo real | ❌ | ✅ |
 | Interface visual completa | ❌ | ✅ |
 | Multi-workspaces | ❌ | ✅ |
