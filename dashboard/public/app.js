@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Estado Local
   let activeSquad = 'infra';
   let squads = {};
-  let workspaces = [];
   let socket = null;
 
   // Lista dos 18 agentes padrão com especialidade e mesas pré-definidas
@@ -30,15 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Elementos do DOM
   const tabs = document.querySelectorAll('.nav-item');
   const tabContents = document.querySelectorAll('.tab-content');
-  const workspaceSelect = document.getElementById('workspace-select');
-  const addWorkspaceBtn = document.getElementById('add-workspace-btn');
-  const addWorkspaceModal = document.getElementById('add-workspace-modal');
-  const closeWorkspaceModalBtn = document.querySelector('.close-workspace-modal-btn');
-  const addWorkspaceForm = document.getElementById('add-workspace-form');
-  const cancelWsBtn = document.getElementById('cancel-ws-btn');
-  
   const squadButtonsContainer = document.getElementById('squad-buttons-container');
-  const agentsGrid = document.getElementById('agents-floor-grid');
   const pipelineStatusBadge = document.getElementById('pipeline-status-badge');
   const pipelineFlowContainer = document.getElementById('pipeline-flow-container');
   const terminalLog = document.getElementById('terminal-body-log');
@@ -95,42 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
       agentsGrid.appendChild(desk);
     });
   }
-
-  // Carrega lista de Workspaces
-  async function loadWorkspaces() {
-    try {
-      const res = await fetch('/api/workspaces');
-      const data = await res.json();
-      workspaces = data.workspaces;
-      workspaceSelect.innerHTML = '';
-      workspaces.forEach(ws => {
-        const option = document.createElement('option');
-        option.value = ws.id;
-        option.textContent = ws.name;
-        if (ws.id === data.activeWorkspace) {
-          option.selected = true;
-        }
-        workspaceSelect.appendChild(option);
-      });
-    } catch (e) {
-      console.error('Erro ao carregar workspaces:', e);
-    }
-  }
-
-  workspaceSelect.addEventListener('change', async (e) => {
-    const id = e.target.value;
-    try {
-      await fetch('/api/workspaces/select', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id })
-      });
-      appendLog(`[SISTEMA] Alterado para o workspace: ${id}`);
-      location.reload(); // Recarrega para reinicializar todos os dados do novo diretório
-    } catch (e) {
-      console.error('Erro ao alterar workspace:', e);
-    }
-  });
 
   // Carrega e desenha lista de Squads
   async function loadSquads() {
@@ -398,7 +353,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Inicialização Inicial
   initializeAgentsGrid();
-  loadWorkspaces();
   loadSquads();
   setupWebSocket();
 });

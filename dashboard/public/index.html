@@ -47,13 +47,6 @@
           <h1>Painel Operacional</h1>
           <p class="subtitle">Orquestração de Agentes AI e Monitoramento em Tempo Real</p>
         </div>
-        
-        <!-- Seletor de Workspace -->
-        <div class="workspace-area">
-          <select id="workspace-select" class="ws-select">
-            <!-- Workspaces serão injetados dinamicamente -->
-          </select>
-        </div>
       </header>
 
       <!-- Abas de Conteúdo -->
@@ -239,34 +232,6 @@
 
   </div>
 
-
-
-  <!-- Modal: Adicionar Workspace -->
-  <div id="add-workspace-modal" class="modal">
-    <div class="modal-content">
-      <span class="close-workspace-modal-btn">&times;</span>
-      <h2>Adicionar Novo Workspace</h2>
-      
-      <form id="add-workspace-form">
-        <div class="form-group">
-          <label for="ws-name-input">Nome do Workspace</label>
-          <input type="text" id="ws-name-input" placeholder="Ex: Cliente Alpha Ops" required>
-        </div>
-        <div class="form-group">
-          <label for="ws-path-input">Caminho do Diretório Local (Absoluto)</label>
-          <input type="text" id="ws-path-input" placeholder="Ex: C:/Users/Docs/squad-ai-alpha" required>
-        </div>
-        <div class="form-group">
-          <label for="ws-desc-input">Descrição / Observações</label>
-          <input type="text" id="ws-desc-input" placeholder="Opcional">
-        </div>
-        <div class="modal-actions">
-          <button type="button" class="btn btn-secondary" id="cancel-ws-btn">Cancelar</button>
-          <button type="submit" class="btn btn-primary">Adicionar Workspace</button>
-        </div>
-      </form>
-    </div>
-  </div>
 
   <script src="app.js"></script>
 </body>
