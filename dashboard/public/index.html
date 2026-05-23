@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Squad-AI | Dashboard Operacional</title>
+  <!-- Importando Fontes Premium -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Sidebar de Navegação -->
+    <aside class="sidebar">
+      <div class="logo-area">
+        <span class="logo-icon">🤖</span>
+        <span class="logo-text">Squad-AI</span>
+      </div>
+      <nav class="nav-menu">
+        <button class="nav-item active" data-tab="dashboard-tab">
+          <span class="nav-icon">📊</span> Dashboard
+        </button>
+        <button class="nav-item" data-tab="squads-tab">
+          <span class="nav-icon">👥</span> Minhas Squads
+        </button>
+        <button class="nav-item" data-tab="secrets-tab">
+          <span class="nav-icon">🔐</span> Segredos
+        </button>
+        <button class="nav-item" data-tab="config-tab">
+          <span class="nav-icon">⚙️</span> Configurações
+        </button>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="version-badge">v1.2.0 OS Enterprise</div>
+      </div>
+    </aside>
+
+    <!-- Área Principal de Conteúdo -->
+    <main class="main-content">
+      
+      <!-- Cabeçalho Principal -->
+      <header class="main-header">
+        <div class="header-title">
+          <h1>Painel Operacional</h1>
+          <p class="subtitle">Orquestração de Agentes AI e Monitoramento em Tempo Real</p>
+        </div>
+        
+        <!-- Seletor de Workspace -->
+        <div class="workspace-area">
+          <select id="workspace-select" class="ws-select">
+            <!-- Workspaces serão injetados dinamicamente -->
+          </select>
+        </div>
+      </header>
+
+      <!-- Abas de Conteúdo -->
+      <div class="tab-content active" id="dashboard-tab">
+        
+        <!-- Status de Execução Geral -->
+        <div class="squad-selector-bar">
+          <h2>Selecione a Squad:</h2>
+          <div id="squad-buttons-container" class="squad-pills">
+            <!-- Botões das squads ativas injetados aqui -->
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          
+          <!-- Visualização do Pipeline -->
+          <section class="card pipeline-card">
+            <div class="card-header">
+              <h3>Fases do Pipeline Operacional</h3>
+              <div id="pipeline-status-badge" class="badge idle">Inativo</div>
+            </div>
+            
+            <div class="pipeline-flow" id="pipeline-flow-container">
+              <div class="pipeline-step" data-stage="analysis">
+                <div class="step-num">1</div>
+                <div class="step-label">Analysis</div>
+                <div class="step-agent">📈 SRE</div>
+              </div>
+              <div class="pipeline-arrow">➔</div>
+              <div class="pipeline-step" data-stage="planning">
+                <div class="step-num">2</div>
+                <div class="step-label">Planning</div>
+                <div class="step-agent">📐 Arch</div>
+              </div>
+              <div class="pipeline-arrow">➔</div>
+              <div class="pipeline-step" data-stage="execution">
+                <div class="step-num">3</div>
+                <div class="step-label">Execution</div>
+                <div class="step-agent">🔄 DevOps</div>
+              </div>
+              <div class="pipeline-arrow">➔</div>
+              <div class="pipeline-step" data-stage="security-review">
+                <div class="step-num">4</div>
+                <div class="step-label">Security</div>
+                <div class="step-agent">🔐 Cyber</div>
+              </div>
+              <div class="pipeline-arrow">➔</div>
+              <div class="pipeline-step" data-stage="documentation">
+                <div class="step-num">5</div>
+                <div class="step-label">Docs</div>
+                <div class="step-agent">📝 Docs</div>
+              </div>
+              <div class="pipeline-arrow">➔</div>
+              <div class="pipeline-step" data-stage="review">
+                <div class="step-num">6</div>
+                <div class="step-label">Review</div>
+                <div class="step-agent">🏛️ Tech Lead</div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Grid dos 18 Agentes -->
+          <section class="card agents-card">
+            <div class="card-header">
+              <h3>Sala dos Agentes (Mesa de Controle)</h3>
+              <p class="card-subtitle">Visualize quais agentes estão trabalhando, ociosos ou se vetaram a operação</p>
+            </div>
+            <div class="agents-floor" id="agents-floor-grid">
+              <!-- Os agentes serão injetados dinamicamente na estrutura de desk 3x6 -->
+            </div>
+          </section>
+
+          <!-- Console e Logs em Tempo Real -->
+          <section class="card terminal-card">
+            <div class="card-header">
+              <h3>Console do Orquestrador</h3>
+              <button id="clear-console-btn" class="btn-clear">Limpar</button>
+            </div>
+            <div class="terminal-body" id="terminal-body-log">
+              <span class="terminal-placeholder">Aguardando início de execução ou logs de transmissão...</span>
+            </div>
+          </section>
+
+          <!-- Visualizador de Relatório / Markdown de Saída -->
+          <section class="card report-viewer-card">
+            <div class="card-header">
+              <h3>Relatório de Saída da Etapa</h3>
+              <div id="report-meta-info" class="report-meta">Selecione uma etapa concluída no pipeline para inspecionar os artefatos.</div>
+            </div>
+            <div class="report-body" id="report-body-content">
+              <div class="empty-state">
+                <span class="empty-icon">📄</span>
+                <p>Nenhum estágio selecionado. Clique em um estágio "Concluído" no pipeline acima para visualizar os artefatos gerados pelo agente correspondente.</p>
+              </div>
+            </div>
+          </section>
+
+        </div>
+      </div>
+
+      <!-- Aba: Minhas Squads -->
+      <div class="tab-content" id="squads-tab">
+        <div class="tab-header-action">
+          <h2>Gerenciador de Squads</h2>
+          <!-- Botão de criação removido - dashboard é apenas visual -->
+        </div>
+        <div class="squads-list" id="squads-list-container">
+          <!-- Lista de squads registradas -->
+        </div>
+      </div>
+
+      <!-- Aba: Segredos -->
+      <div class="tab-content" id="secrets-tab">
+        <h2>Cofre de Segredos do Workspace</h2>
+        <p class="tab-description">Armazene de forma segura as chaves de API e tokens usados pelas squads do projeto. Os segredos são salvos localmente de forma encriptada (AES-256).</p>
+        
+        <form id="secrets-form" class="settings-form">
+          <div class="form-group">
+            <label for="secret-grafana">Token do Grafana (GRAFANA_TOKEN)</label>
+            <input type="password" id="secret-grafana" name="GRAFANA_TOKEN" placeholder="Inserir token ou mantido oculto">
+          </div>
+          <div class="form-group">
+            <label for="secret-zabbix">Senha do Zabbix (ZABBIX_PASSWORD)</label>
+            <input type="password" id="secret-zabbix" name="ZABBIX_PASSWORD" placeholder="Inserir senha ou mantida oculta">
+          </div>
+          <div class="form-group">
+            <label for="secret-jira">Token de API do Jira (JIRA_TOKEN)</label>
+            <input type="password" id="secret-jira" name="JIRA_TOKEN" placeholder="Inserir token ou mantido oculto">
+          </div>
+          <div class="form-group">
+            <label for="secret-slack">Slack Incoming Webhook URL</label>
+            <input type="password" id="secret-slack" name="SLACK_WEBHOOK_URL" placeholder="Inserir webhook ou mantido oculto">
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Salvar Segredos</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Aba: Configurações -->
+      <div class="tab-content" id="config-tab">
+        <h2>Configurações do Perfil e Preferências</h2>
+        <p class="tab-description">Altere os parâmetros operacionais da empresa, linguagem de comunicação dos agentes e templates globais.</p>
+        
+        <!-- Configuração de Empresa e Preferências unificadas -->
+        <div class="config-sections">
+          <section class="config-sub-card">
+            <h3>Perfil da Empresa</h3>
+            <div class="form-group">
+              <label for="company-name">Nome da Empresa</label>
+              <input type="text" id="company-name" placeholder="Ex: Squad-AI Korp">
+            </div>
+            <div class="form-group">
+              <label for="company-url">URL da Empresa (para Onboarding)</label>
+              <input type="text" id="company-url" placeholder="Ex: https://squad-ai.com">
+            </div>
+            <button id="save-company-btn" class="btn btn-primary">Salvar Perfil</button>
+          </section>
+
+          <section class="config-sub-card">
+            <h3>Preferências Globais</h3>
+            <div class="form-group">
+              <label for="pref-language">Idioma de Comunicação dos Agentes</label>
+              <select id="pref-language">
+                <option value="pt-BR">Português Brasileiro</option>
+                <option value="en-US">English</option>
+                <option value="es-ES">Español</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="pref-model">Modelo de Orquestração Principal</label>
+              <select id="pref-model">
+                <option value="google/gemini-2.0-flash">Gemini 2.0 Flash (Mais Rápido / Custo-benefício)</option>
+                <option value="google/gemini-2.5-pro">Gemini 2.5 Pro (Raciocínio Complexo)</option>
+              </select>
+            </div>
+            <button id="save-prefs-btn" class="btn btn-primary">Salvar Preferências</button>
+          </section>
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+
+
+  <!-- Modal: Adicionar Workspace -->
+  <div id="add-workspace-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-workspace-modal-btn">&times;</span>
+      <h2>Adicionar Novo Workspace</h2>
+      
+      <form id="add-workspace-form">
+        <div class="form-group">
+          <label for="ws-name-input">Nome do Workspace</label>
+          <input type="text" id="ws-name-input" placeholder="Ex: Cliente Alpha Ops" required>
+        </div>
+        <div class="form-group">
+          <label for="ws-path-input">Caminho do Diretório Local (Absoluto)</label>
+          <input type="text" id="ws-path-input" placeholder="Ex: C:/Users/Docs/squad-ai-alpha" required>
+        </div>
+        <div class="form-group">
+          <label for="ws-desc-input">Descrição / Observações</label>
+          <input type="text" id="ws-desc-input" placeholder="Opcional">
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="cancel-ws-btn">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Adicionar Workspace</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

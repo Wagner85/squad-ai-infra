@@ -1,0 +1,17 @@
+{
+  "activeWorkspace": "teste",
+  "workspaces": [
+    {
+      "id": "default",
+      "name": "Infraestrutura Principal",
+      "path": "c:/Users/Wagner.Oliveira/Documents/Squad-ai_Korp",
+      "description": "Workspace padrão para orquestração de infraestrutura de alta performance"
+    },
+    {
+      "id": "teste",
+      "name": "teste",
+      "path": "C:/Users/Wagner.Oliveira/Documents/Squad-ai_Korp/dashboard/ c:/Users/Wagner.Oliveira/Documents/Squad-ai_Korp/squads/teste",
+      "description": ""
+    }
+  ]
+}

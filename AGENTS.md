@@ -52,6 +52,7 @@ Parse user input and route to the appropriate action:
 | Input Pattern | Action |
 |---------------|--------|
 | `/squad-ai` or `/squad-ai menu` | Show main menu |
+| `/squad-ai dashboard` | Load Dashboard → Inicializa interface visual na porta 4200 |
 | `/squad-ai help` | Show help text |
 | `/squad-ai create <description>` | Load Architect → Create Squad flow |
 | `/squad-ai list` | List all squads in `squads/` directory |

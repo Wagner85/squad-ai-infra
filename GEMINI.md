@@ -19,7 +19,15 @@ Se `company.md` contiver `<!-- NOT CONFIGURED -->`, inicie o fluxo de onboarding
 /squad-ai
 ```
 
-Rota para o menu principal. Todas as ações estão documentadas em `AGENTS.md`.
+Rota para o menu principal. 
+
+```
+/squad-ai dashboard
+```
+
+Inicializa o dashboard web e a interface visual completa em tempo real (porta 4200).
+
+Todas as ações estão documentadas em `AGENTS.md`.
 
 ## Stack de Modelos Preferida
 

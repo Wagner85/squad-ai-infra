@@ -1,0 +1,16 @@
+{
+  "name": "squad-ai-dashboard",
+  "version": "1.0.0",
+  "description": "Dashboard local, Multi-workspaces e Portal de Integrações do Squad-AI",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "chokidar": "^3.6.0",
+    "express": "^4.19.2",
+    "ws": "^8.16.0"
+  }
+}

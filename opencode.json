@@ -194,6 +194,10 @@
     "squad-ai": {
       "template": "You are the squad-ai system for this project. Read AGENTS.md in full and follow the initialization flow. Route the user's request to the correct squad-ai action: menu, create, run, list, edit, delete, skills, settings, or help.",
       "description": "Gerencia e executa squads de agentes AI"
+    },
+    "squad-ai dashboard": {
+      "template": "Inicie o servidor do dashboard local. Navegue para o diretório dashboard e execute npm run dev ou npm start para expor a interface visual na porta 4200.",
+      "description": "Inicializa a interface visual e o painel em tempo real na porta 4200"
     }
   },
   "permission": {

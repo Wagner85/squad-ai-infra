@@ -38,8 +38,8 @@ O **Squad-AI | Infraestrutura** é um:
 
 ## 🌐 Open Source Edition
 
-| Recurso | 🔵 Minimal (Esta) | 🟢 Enterprise |
-|---------|:------------------:|:-------------:|
+| Recurso | 🔵 Minimal | 🟢 Enterprise (Esta) |
+|---------|:----------:|:--------------------:|
 | Pipeline de 6 estágios | ✅ | ✅ |
 | 18 Agentes especializados | ✅ | ✅ |
 | Condições de veto | ✅ | ✅ |
@@ -49,7 +49,7 @@ O **Squad-AI | Infraestrutura** é um:
 | Multi-workspaces | ❌ | ✅ |
 | Integrações corporativas | ❌ | ✅ |
 
-> ⚠️ **Nota**: Esta é a versão **open source** criada para a comunidade: estudar, contribuir, experimentar e evoluir.
+> 💡 **Nota**: Esta versão agora inclui suporte completo ao **Dashboard local em tempo real** (porta 4200), **Multi-workspaces** e **Integrações corporativas**. Para inicializar o painel, execute o comando `/squad-ai dashboard`.
 
 ---
 
