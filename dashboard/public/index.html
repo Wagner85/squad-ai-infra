@@ -26,6 +26,9 @@
         <button class="nav-item" data-tab="squads-tab">
           <span class="nav-icon">👥</span> Minhas Squads
         </button>
+        <button class="nav-item" data-tab="agents-tab">
+          <span class="nav-icon">🧠</span> Agentes
+        </button>
         <button class="nav-item" data-tab="secrets-tab">
           <span class="nav-icon">🔐</span> Segredos
         </button>
@@ -155,6 +158,23 @@
         </div>
         <div class="squads-list" id="squads-list-container">
           <!-- Lista de squads registradas -->
+        </div>
+      </div>
+
+      <!-- Aba: Agentes -->
+      <div class="tab-content" id="agents-tab">
+        <div class="tab-header-action">
+          <h2>Agentes da Squad</h2>
+          <select id="agent-squad-select" class="ws-select">
+            <!-- Squads serão injetados dinamicamente -->
+          </select>
+        </div>
+        <div class="agent-list-with-prompts" id="agent-list-container">
+          <!-- Lista de agentes será injetada dinamicamente -->
+          <div class="empty-state">
+            <span class="empty-icon">🧠</span>
+            <p>Carregando agentes...</p>
+          </div>
         </div>
       </div>
 

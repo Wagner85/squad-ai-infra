@@ -61,6 +61,8 @@ document.addEventListener('DOMContentLoaded', () => {
         loadSecrets();
       } else if (tab.dataset.tab === 'config-tab') {
         loadCompanyProfileAndPrefs();
+      } else if (tab.dataset.tab === 'agents-tab') {
+        loadAgentsSquadSelect();
       }
     });
   });
@@ -392,6 +394,86 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('Erro ao salvar segredo.');
     }
   });
+
+  // Tab: Agentes
+  const agentListContainer = document.getElementById('agent-list-container');
+  const agentSquadSelect = document.getElementById('agent-squad-select');
+  let agentSquads = [];
+
+  async function loadAgentsSquadSelect() {
+    try {
+      const res = await fetch('/api/squads');
+      agentSquads = await res.json();
+      agentSquadSelect.innerHTML = '';
+      agentSquads.forEach(sq => {
+        const opt = document.createElement('option');
+        opt.value = sq.name || sq.squad;
+        opt.textContent = (sq.name || sq.squad).toUpperCase();
+        agentSquadSelect.appendChild(opt);
+      });
+      if (agentSquads.length > 0) {
+        loadAgents(agentSquads[0].name || agentSquads[0].squad);
+      }
+    } catch (e) {
+      agentListContainer.innerHTML = '<div class="empty-state"><span class="empty-icon">⚠️</span><p>Erro ao carregar squads.</p></div>';
+    }
+  }
+
+  agentSquadSelect.addEventListener('change', (e) => {
+    loadAgents(e.target.value);
+  });
+
+  async function loadAgents(squadName) {
+    agentListContainer.innerHTML = '<div class="empty-state"><span class="empty-icon">⏳</span><p>Carregando agentes...</p></div>';
+    try {
+      const res = await fetch(`/api/squads/${squadName}/agents`);
+      const agents = await res.json();
+
+      if (agents.length === 0) {
+        agentListContainer.innerHTML = '<div class="empty-state"><span class="empty-icon">🧠</span><p>Nenhum agente encontrado para esta squad.</p></div>';
+        return;
+      }
+
+      let html = '';
+      for (const agent of agents) {
+        const promptRes = await fetch(`/api/squads/${squadName}/agents/${agent.id}/prompt`);
+        const promptData = promptRes.ok ? await promptRes.json() : { content: '# Erro ao carregar prompt' };
+
+        html += `
+          <div class="agent-prompt-card">
+            <div class="agent-prompt-header">
+              <span class="agent-prompt-icon">${agent.icon}</span>
+              <div class="agent-prompt-info">
+                <span class="agent-prompt-name">${agent.name}</span>
+                <span class="agent-prompt-id">${agent.id}</span>
+              </div>
+              <button class="btn btn-sm toggle-prompt" data-target="prompt-${agent.id}">Ver Prompt</button>
+            </div>
+            <div class="agent-prompt-body" id="prompt-${agent.id}" style="display: none;">
+              <pre class="agent-prompt-content">${escapeHtml(promptData.content)}</pre>
+            </div>
+          </div>
+        `;
+      }
+
+      agentListContainer.innerHTML = html;
+
+      document.querySelectorAll('.toggle-prompt').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const target = document.getElementById(btn.dataset.target);
+          const isHidden = target.style.display === 'none';
+          target.style.display = isHidden ? 'block' : 'none';
+          btn.textContent = isHidden ? 'Esconder Prompt' : 'Ver Prompt';
+        });
+      });
+    } catch (e) {
+      agentListContainer.innerHTML = '<div class="empty-state"><span class="empty-icon">⚠️</span><p>Erro ao carregar agentes.</p></div>';
+    }
+  }
+
+  function escapeHtml(text) {
+    return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
 
   // Tab: Configurações & Preferências
   async function loadCompanyProfileAndPrefs() {

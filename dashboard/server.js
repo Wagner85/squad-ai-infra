@@ -212,6 +212,50 @@ app.get('/api/squads/:squadName/reports/:stageId', (req, res) => {
   }
 });
 
+// APIs para obter agentes de uma squad
+app.get('/api/squads/:squadName/agents', (req, res) => {
+  const { squadName } = req.params;
+  const wsPath = getActiveWorkspacePath();
+  const partyCsvPath = path.join(wsPath, 'squads', squadName, 'squad-party.csv');
+
+  try {
+    if (!fs.existsSync(partyCsvPath)) {
+      return res.json([]);
+    }
+
+    const csv = fs.readFileSync(partyCsvPath, 'utf8');
+    const lines = csv.trim().split('\n');
+    const agents = lines.slice(1).map(line => {
+      const [agentPath, displayName, icon] = line.split(',');
+      const agentId = path.basename(agentPath, '.agent.md');
+      return { id: agentId, name: displayName, icon: icon || '🤖', file: agentPath.trim() };
+    });
+
+    res.json(agents);
+  } catch (e) {
+    res.status(500).json({ error: 'Erro ao listar agentes', details: e.message });
+  }
+});
+
+// APIs para obter o prompt de um agente
+app.get('/api/squads/:squadName/agents/:agentId/prompt', (req, res) => {
+  const { squadName, agentId } = req.params;
+  const wsPath = getActiveWorkspacePath();
+  const agentDir = path.join(wsPath, 'squads', squadName, 'agents');
+  const agentFile = fs.readdirSync(agentDir).find(f => f.startsWith(agentId) && f.endsWith('.agent.md'));
+
+  try {
+    if (!agentFile) {
+      return res.status(404).json({ error: 'Agente não encontrado' });
+    }
+
+    const content = fs.readFileSync(path.join(agentDir, agentFile), 'utf8');
+    res.json({ content, filename: agentFile });
+  } catch (e) {
+    res.status(500).json({ error: 'Erro ao ler prompt do agente', details: e.message });
+  }
+});
+
 // APIs para gerenciamento de credenciais criptografadas
 app.get('/api/secrets', (req, res) => {
   try {
