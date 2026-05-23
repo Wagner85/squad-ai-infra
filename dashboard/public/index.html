@@ -167,28 +167,36 @@
           <span class="file-path-label">Arquivo de armazenamento:</span>
           <code>_squad-ai/config/secrets.enc.json</code>
         </div>
-        
-        <form id="secrets-form" class="settings-form">
-          <div class="form-group">
-            <label for="secret-grafana">Token do Grafana (GRAFANA_TOKEN)</label>
-            <input type="password" id="secret-grafana" name="GRAFANA_TOKEN" placeholder="Inserir token ou mantido oculto">
+
+        <div class="secrets-toolbar">
+          <button id="add-secret-btn" class="btn btn-primary">＋ Novo Segredo</button>
+        </div>
+
+        <div id="secrets-list" class="secrets-list">
+          <!-- Secrets will be loaded dynamically -->
+        </div>
+
+        <!-- Modal: Add/Edit Secret -->
+        <div id="secret-modal" class="modal">
+          <div class="modal-content">
+            <span class="close-secret-modal-btn">&times;</span>
+            <h2 id="secret-modal-title">Novo Segredo</h2>
+            <form id="secret-form">
+              <div class="form-group">
+                <label for="secret-key-input">Nome da Chave (ex: GRAFANA_TOKEN)</label>
+                <input type="text" id="secret-key-input" placeholder="GRAFANA_TOKEN" required>
+              </div>
+              <div class="form-group">
+                <label for="secret-value-input">Valor</label>
+                <input type="password" id="secret-value-input" placeholder="Valor do segredo" required>
+              </div>
+              <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" id="cancel-secret-btn">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Salvar</button>
+              </div>
+            </form>
           </div>
-          <div class="form-group">
-            <label for="secret-zabbix">Senha do Zabbix (ZABBIX_PASSWORD)</label>
-            <input type="password" id="secret-zabbix" name="ZABBIX_PASSWORD" placeholder="Inserir senha ou mantida oculta">
-          </div>
-          <div class="form-group">
-            <label for="secret-jira">Token de API do Jira (JIRA_TOKEN)</label>
-            <input type="password" id="secret-jira" name="JIRA_TOKEN" placeholder="Inserir token ou mantido oculto">
-          </div>
-          <div class="form-group">
-            <label for="secret-slack">Slack Incoming Webhook URL</label>
-            <input type="password" id="secret-slack" name="SLACK_WEBHOOK_URL" placeholder="Inserir webhook ou mantido oculto">
-          </div>
-          <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Salvar Segredos</button>
-          </div>
-        </form>
+        </div>
       </div>
 
       <!-- Aba: Configurações -->

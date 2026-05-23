@@ -38,8 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const reportMetaInfo = document.getElementById('report-meta-info');
 
   const squadsListContainer = document.getElementById('squads-list-container');
-  
-  const secretsForm = document.getElementById('secrets-form');
+
   const companyNameInput = document.getElementById('company-name');
   const companyUrlInput = document.getElementById('company-url');
   const saveCompanyBtn = document.getElementById('save-company-btn');
@@ -295,37 +294,102 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Tab: Segredos
+  const secretsList = document.getElementById('secrets-list');
+  const addSecretBtn = document.getElementById('add-secret-btn');
+  const secretModal = document.getElementById('secret-modal');
+  const closeSecretModalBtn = document.querySelector('.close-secret-modal-btn');
+  const cancelSecretBtn = document.getElementById('cancel-secret-btn');
+  const secretForm = document.getElementById('secret-form');
+  const secretKeyInput = document.getElementById('secret-key-input');
+  const secretValueInput = document.getElementById('secret-value-input');
+  const secretModalTitle = document.getElementById('secret-modal-title');
+
+  let editingSecretKey = null;
+
   async function loadSecrets() {
     try {
       const res = await fetch('/api/secrets');
       const secrets = await res.json();
-      for (const [key, val] of Object.entries(secrets)) {
-        const input = document.querySelector(`input[name="${key}"]`);
-        if (input) input.placeholder = val;
+      secretsList.innerHTML = '';
+
+      const entries = Object.entries(secrets);
+      if (entries.length === 0) {
+        secretsList.innerHTML = '<div class="empty-state"><span class="empty-icon">🔐</span><p>Nenhum segredo cadastrado. Clique em "＋ Novo Segredo" para adicionar.</p></div>';
+        return;
       }
-    } catch (e) {}
+
+      entries.forEach(([key, masked]) => {
+        const row = document.createElement('div');
+        row.className = 'secret-row';
+        row.innerHTML = `
+          <div class="secret-info">
+            <span class="secret-key">${key}</span>
+            <span class="secret-masked">${masked}</span>
+          </div>
+          <div class="secret-actions">
+            <button class="btn btn-sm edit-secret" data-key="${key}">Editar</button>
+            <button class="btn btn-sm btn-danger delete-secret" data-key="${key}">Remover</button>
+          </div>
+        `;
+        secretsList.appendChild(row);
+      });
+
+      document.querySelectorAll('.edit-secret').forEach(btn => {
+        btn.addEventListener('click', () => openSecretModal(btn.dataset.key));
+      });
+
+      document.querySelectorAll('.delete-secret').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (!confirm(`Remover segredo "${btn.dataset.key}"?`)) return;
+          try {
+            await fetch('/api/secrets', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ [btn.dataset.key]: '' })
+            });
+            loadSecrets();
+          } catch (e) {
+            alert('Erro ao remover segredo.');
+          }
+        });
+      });
+    } catch (e) {
+      secretsList.innerHTML = '<div class="empty-state"><span class="empty-icon">⚠️</span><p>Erro ao carregar segredos.</p></div>';
+    }
   }
 
-  secretsForm.addEventListener('submit', async (e) => {
+  function openSecretModal(key = null) {
+    editingSecretKey = key;
+    secretModalTitle.textContent = key ? `Editar Segredo: ${key}` : 'Novo Segredo';
+    secretKeyInput.value = key || '';
+    secretKeyInput.disabled = !!key;
+    secretValueInput.value = '';
+    secretModal.classList.add('active');
+  }
+
+  addSecretBtn.addEventListener('click', () => openSecretModal());
+  closeSecretModalBtn.addEventListener('click', () => secretModal.classList.remove('active'));
+  cancelSecretBtn.addEventListener('click', () => secretModal.classList.remove('active'));
+
+  secretForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const formData = new FormData(secretsForm);
-    const body = {};
-    formData.forEach((val, key) => {
-      body[key] = val;
-    });
+    const key = secretKeyInput.value.trim();
+    const value = secretValueInput.value.trim();
+    if (!key || !value) return;
 
     try {
       const res = await fetch('/api/secrets', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
+        body: JSON.stringify({ [key]: value })
       });
       if (res.ok) {
-        alert('Segredos salvos com sucesso!');
+        secretModal.classList.remove('active');
+        secretForm.reset();
         loadSecrets();
       }
     } catch (e) {
-      alert('Erro ao salvar segredos.');
+      alert('Erro ao salvar segredo.');
     }
   });
 
