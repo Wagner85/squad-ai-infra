@@ -65,6 +65,8 @@ document.addEventListener('DOMContentLoaded', () => {
         loadAgentsSquadSelect();
       } else if (tab.dataset.tab === 'outputs-tab') {
         loadOutputsSquadSelect();
+      } else if (tab.dataset.tab === 'skills-tab') {
+        loadSkills();
       }
     });
   });
@@ -584,6 +586,83 @@ document.addEventListener('DOMContentLoaded', () => {
   // Fecha modal ao clicar fora
   outputViewModal.addEventListener('click', (e) => {
     if (e.target === outputViewModal) outputViewModal.classList.remove('active');
+  });
+
+  // Tab: Skills
+  const skillsContainer = document.getElementById('skills-list-container');
+  const addSkillBtn = document.getElementById('add-skill-btn');
+  const skillModal = document.getElementById('skill-modal');
+  const closeSkillModalBtn = document.querySelector('.close-skill-modal-btn');
+  const cancelSkillBtn = document.getElementById('cancel-skill-btn');
+  const skillForm = document.getElementById('skill-form');
+  const skillIdInput = document.getElementById('skill-id-input');
+  const skillNameInput = document.getElementById('skill-name-input');
+  const skillDescInput = document.getElementById('skill-desc-input');
+  const skillCatsInput = document.getElementById('skill-cats-input');
+
+  async function loadSkills() {
+    skillsContainer.innerHTML = '<div class="empty-state"><span class="empty-icon">⏳</span><p>Carregando skills...</p></div>';
+    try {
+      const res = await fetch('/api/skills');
+      const skills = await res.json();
+
+      if (skills.length === 0) {
+        skillsContainer.innerHTML = '<div class="empty-state"><span class="empty-icon">⚡</span><p>Nenhuma skill instalada. Clique em "Nova Skill" para adicionar.</p></div>';
+        return;
+      }
+
+      let html = '';
+      skills.forEach(skill => {
+        const cats = (skill.categories || []).map(c => `<span class="skill-tag">${c}</span>`).join('');
+        html += `
+          <div class="skill-card">
+            <div class="skill-card-header">
+              <h3>${skill.name}</h3>
+              <span class="skill-badge ${skill.type}">${skill.type}</span>
+            </div>
+            <p class="skill-card-desc">${skill.description || 'Sem descrição'}</p>
+            <div class="skill-card-meta">
+              <span class="skill-id">${skill.id}</span>
+              <span class="skill-version">v${skill.version}</span>
+            </div>
+            <div class="skill-card-cats">${cats}</div>
+          </div>
+        `;
+      });
+      skillsContainer.innerHTML = html;
+    } catch (e) {
+      skillsContainer.innerHTML = '<div class="empty-state"><span class="empty-icon">⚠️</span><p>Erro ao carregar skills.</p></div>';
+    }
+  }
+
+  addSkillBtn.addEventListener('click', () => skillModal.classList.add('active'));
+  closeSkillModalBtn.addEventListener('click', () => skillModal.classList.remove('active'));
+  cancelSkillBtn.addEventListener('click', () => skillModal.classList.remove('active'));
+
+  skillForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = skillIdInput.value.trim().toLowerCase().replace(/[^a-z0-9-]/g, '-');
+    const name = skillNameInput.value.trim() || id;
+    const description = skillDescInput.value.trim();
+    const cats = skillCatsInput.value.split(',').map(c => c.trim()).filter(Boolean);
+
+    try {
+      const res = await fetch('/api/skills', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, name, description, type: 'prompt', version: '1.0.0', categories: cats })
+      });
+      if (res.ok) {
+        skillModal.classList.remove('active');
+        skillForm.reset();
+        loadSkills();
+      } else {
+        const err = await res.json();
+        alert(`Erro: ${err.error}`);
+      }
+    } catch (e) {
+      alert('Erro ao criar skill.');
+    }
   });
 
   // Tab: Configurações & Preferências

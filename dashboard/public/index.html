@@ -32,6 +32,9 @@
         <button class="nav-item" data-tab="outputs-tab">
           <span class="nav-icon">📁</span> Outputs
         </button>
+        <button class="nav-item" data-tab="skills-tab">
+          <span class="nav-icon">⚡</span> Skills
+        </button>
         <button class="nav-item" data-tab="secrets-tab">
           <span class="nav-icon">🔐</span> Segredos
         </button>
@@ -207,6 +210,48 @@
               <pre class="output-view-content" id="output-view-content"></pre>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- Aba: Skills -->
+      <div class="tab-content" id="skills-tab">
+        <div class="tab-header-action">
+          <h2>Skills do Projeto</h2>
+          <button id="add-skill-btn" class="btn btn-primary">＋ Nova Skill</button>
+        </div>
+        <p class="tab-description">Skills são instruções especializadas que os agentes carregam para executar tarefas específicas. Cada skill é um arquivo <code>SKILL.md</code> na pasta <code>skills/</code>.</p>
+        <div id="skills-list-container" class="skills-grid">
+          <div class="empty-state"><span class="empty-icon">⚡</span><p>Carregando skills...</p></div>
+        </div>
+      </div>
+
+      <!-- Modal: Nova Skill -->
+      <div id="skill-modal" class="modal">
+        <div class="modal-content">
+          <span class="close-skill-modal-btn">&times;</span>
+          <h2>Criar Nova Skill</h2>
+          <form id="skill-form">
+            <div class="form-group">
+              <label for="skill-id-input">ID da Skill (slug, usado como nome da pasta)</label>
+              <input type="text" id="skill-id-input" placeholder="ex: prometheus-alerts" required>
+            </div>
+            <div class="form-group">
+              <label for="skill-name-input">Nome de Exibição</label>
+              <input type="text" id="skill-name-input" placeholder="ex: Prometheus Alert Rules">
+            </div>
+            <div class="form-group">
+              <label for="skill-desc-input">Descrição</label>
+              <textarea id="skill-desc-input" rows="3" placeholder="O que esta skill faz?"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="skill-cats-input">Categorias (separadas por vírgula)</label>
+              <input type="text" id="skill-cats-input" placeholder="ex: monitoring, prometheus, alerts">
+            </div>
+            <div class="modal-actions">
+              <button type="button" class="btn btn-secondary" id="cancel-skill-btn">Cancelar</button>
+              <button type="submit" class="btn btn-primary">Criar Skill</button>
+            </div>
+          </form>
         </div>
       </div>
 

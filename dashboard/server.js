@@ -345,6 +345,114 @@ app.get('/api/squads/:squadName/outputs/read', (req, res) => {
   }
 });
 
+// APIs para Skills
+app.get('/api/skills', (req, res) => {
+  const wsPath = getActiveWorkspacePath();
+  const skillsDir = path.join(wsPath, 'skills');
+
+  try {
+    if (!fs.existsSync(skillsDir)) {
+      return res.json([]);
+    }
+
+    const skills = fs.readdirSync(skillsDir)
+      .filter(dir => fs.statSync(path.join(skillsDir, dir)).isDirectory())
+      .map(dir => {
+        const skillMdPath = path.join(skillsDir, dir, 'SKILL.md');
+        let info = { name: dir, description: '', type: 'prompt', version: '0.0.0', categories: [] };
+
+        if (fs.existsSync(skillMdPath)) {
+          const content = fs.readFileSync(skillMdPath, 'utf8');
+
+          const nameMatch = content.match(/^name:\s*(.+)$/m);
+          const descMatch = content.match(/^description:\s*(.+)$/m);
+          const typeMatch = content.match(/^type:\s*(.+)$/m);
+          const verMatch = content.match(/^version:\s*(.+)$/m);
+
+          const catsMatch = content.match(/^categories:\s*$/m);
+          const cats = [];
+          if (catsMatch) {
+            const after = content.slice(catsMatch.index);
+            const lines = after.split('\n').slice(1);
+            for (const line of lines) {
+              const m = line.match(/^\s*-\s*(.+)/);
+              if (m) cats.push(m[1].trim());
+              else break;
+            }
+          }
+
+          info = {
+            name: nameMatch ? nameMatch[1].trim() : dir,
+            description: descMatch ? descMatch[1].trim() : '',
+            type: typeMatch ? typeMatch[1].trim() : 'prompt',
+            version: verMatch ? verMatch[1].trim() : '0.0.0',
+            categories: cats
+          };
+        }
+
+        return { id: dir, ...info };
+      });
+
+    res.json(skills);
+  } catch (e) {
+    res.status(500).json({ error: 'Erro ao listar skills', details: e.message });
+  }
+});
+
+app.post('/api/skills', (req, res) => {
+  const { id, name, description, type, version, categories } = req.body;
+  if (!id) {
+    return res.status(400).json({ error: 'ID da skill é obrigatório' });
+  }
+
+  const wsPath = getActiveWorkspacePath();
+  const skillDir = path.join(wsPath, 'skills', id);
+
+  try {
+    if (!fs.existsSync(skillDir)) {
+      fs.mkdirSync(skillDir, { recursive: true });
+    }
+
+    const cats = categories && categories.length > 0
+      ? categories.map(c => `  - ${c}`).join('\n')
+      : '  - utility';
+
+    const content = `---
+name: ${name || id}
+description: ${description || ''}
+type: ${type || 'prompt'}
+version: ${version || '1.0.0'}
+categories:
+${cats}
+---
+
+# ${name || id}
+
+${description || ''}
+`;
+
+    fs.writeFileSync(path.join(skillDir, 'SKILL.md'), content, 'utf8');
+    res.json({ success: true, id, name: name || id });
+  } catch (e) {
+    res.status(500).json({ error: 'Erro ao criar skill', details: e.message });
+  }
+});
+
+app.delete('/api/skills/:id', (req, res) => {
+  const { id } = req.params;
+  const wsPath = getActiveWorkspacePath();
+  const skillDir = path.join(wsPath, 'skills', id);
+
+  try {
+    if (fs.existsSync(skillDir)) {
+      fs.rmSync(skillDir, { recursive: true, force: true });
+    }
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: 'Erro ao remover skill', details: e.message });
+  }
+});
+
 // APIs para gerenciamento de credenciais criptografadas
 app.get('/api/secrets', (req, res) => {
   try {
