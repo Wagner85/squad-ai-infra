@@ -29,7 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Elementos do DOM
   const tabs = document.querySelectorAll('.nav-item');
   const tabContents = document.querySelectorAll('.tab-content');
-  const squadButtonsContainer = document.getElementById('squad-buttons-container');
+  const squadFilterSelect = document.getElementById('squad-filter-select');
+  const squadFilterStatus = document.getElementById('squad-filter-status');
   const pipelineStatusBadge = document.getElementById('pipeline-status-badge');
   const pipelineFlowContainer = document.getElementById('pipeline-flow-container');
   const terminalLog = document.getElementById('terminal-body-log');
@@ -92,47 +93,62 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Carrega e desenha lista de Squads
+  // Carrega e desenha lista de Squads no filtro
   async function loadSquads() {
     try {
       const res = await fetch('/api/squads');
       const data = await res.json();
-      squadButtonsContainer.innerHTML = '';
-      
+      squadFilterSelect.innerHTML = '<option value="" disabled selected>Selecione uma squad...</option>';
+
       if (data.length === 0) {
-        squadButtonsContainer.innerHTML = '<span class="text-secondary font-style-italic">Nenhuma squad ativa no workspace.</span>';
+        squadFilterSelect.innerHTML = '<option value="">Nenhuma squad disponível</option>';
+        squadFilterStatus.textContent = '';
         return;
       }
 
       data.forEach((sq, idx) => {
         const squadKey = sq.name || sq.squad || 'unknown';
         squads[squadKey] = sq;
-        
-        // Criar botão tipo Pill
-        const btn = document.createElement('button');
-        btn.className = `squad-pill-btn ${activeSquad === squadKey ? 'active' : ''}`;
-        btn.textContent = squadKey.toUpperCase();
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.squad-pill-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          activeSquad = squadKey;
-          updateDashboardUI(sq);
-        });
-        squadButtonsContainer.appendChild(btn);
-
-        if (idx === 0 && (!activeSquad || activeSquad === 'infra' && !data.some(d => (d.name || d.squad) === 'infra'))) {
-          activeSquad = squadKey;
-          btn.classList.add('active');
-          updateDashboardUI(sq);
-        }
+        const opt = document.createElement('option');
+        opt.value = squadKey;
+        opt.textContent = `${squadKey.toUpperCase()} (${sq.status || 'idle'})`;
+        squadFilterSelect.appendChild(opt);
       });
 
-      if (activeSquad && squads[activeSquad]) {
-        updateDashboardUI(squads[activeSquad]);
+      // Seleciona a primeira ou a ativa
+      const firstKey = data[0].name || data[0].squad || 'unknown';
+      if (!activeSquad || !squads[activeSquad]) {
+        activeSquad = firstKey;
       }
+      squadFilterSelect.value = activeSquad;
+      updateDashboardUI(squads[activeSquad]);
+      updateFilterStatus(squads[activeSquad]);
+
     } catch (e) {
       console.error('Erro ao carregar squads:', e);
     }
+  }
+
+  squadFilterSelect.addEventListener('change', (e) => {
+    const key = e.target.value;
+    if (key && squads[key]) {
+      activeSquad = key;
+      updateDashboardUI(squads[key]);
+      updateFilterStatus(squads[key]);
+    }
+  });
+
+  function updateFilterStatus(squadState) {
+    if (!squadState) {
+      squadFilterStatus.textContent = '';
+      return;
+    }
+    const status = squadState.status || 'idle';
+    const step = squadState.step ? `${squadState.step.current}/${squadState.step.total}` : '-';
+    squadFilterStatus.innerHTML = `
+      <span class="status-badge ${status}">${status}</span>
+      <span class="step-info">Passo: ${step}</span>
+    `;
   }
 
   // Atualiza painel com estado específico de uma squad
@@ -239,8 +255,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const msg = JSON.parse(event.data);
       if (msg.type === 'state') {
         squads[msg.squad] = msg.state;
+        // Atualiza o option no select
+        const opt = squadFilterSelect.querySelector(`option[value="${msg.squad}"]`);
+        if (opt) opt.textContent = `${msg.squad.toUpperCase()} (${msg.state.status || 'idle'})`;
         if (msg.squad === activeSquad) {
           updateDashboardUI(msg.state);
+          updateFilterStatus(msg.state);
         }
       } else if (msg.type === 'log') {
         if (msg.squad === activeSquad) {

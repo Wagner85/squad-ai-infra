@@ -63,10 +63,13 @@
         
         <!-- Status de Execução Geral -->
         <div class="squad-selector-bar">
-          <h2>Selecione a Squad:</h2>
-          <div id="squad-buttons-container" class="squad-pills">
-            <!-- Botões das squads ativas injetados aqui -->
+          <div class="squad-filter-group">
+            <label for="squad-filter-select">Squad:</label>
+            <select id="squad-filter-select" class="squad-filter-select">
+              <option value="">Carregando...</option>
+            </select>
           </div>
+          <div class="squad-filter-status" id="squad-filter-status"></div>
         </div>
 
         <div class="dashboard-grid">

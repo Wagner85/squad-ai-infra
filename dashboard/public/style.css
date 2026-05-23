@@ -195,47 +195,85 @@ body {
 .squad-selector-bar {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
   background-color: rgba(255, 255, 255, 0.02);
-  padding: 16px 24px;
-  border-radius: 16px;
+  padding: 14px 20px;
+  border-radius: 12px;
   border: 1px solid var(--card-border);
 }
 
-.squad-selector-bar h2 {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
-.squad-pills {
+.squad-filter-group {
   display: flex;
+  align-items: center;
   gap: 10px;
 }
 
-.squad-pill-btn {
-  background-color: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--card-border);
-  border-radius: 30px;
-  color: var(--text-secondary);
-  cursor: pointer;
-  font-family: var(--font-main);
+.squad-filter-group label {
   font-size: 14px;
   font-weight: 600;
-  padding: 8px 18px;
-  transition: all 0.3s ease;
+  color: var(--text-secondary);
+  white-space: nowrap;
 }
 
-.squad-pill-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+.squad-filter-select {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 14px;
+  min-width: 240px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239ca3af' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+
+.squad-filter-select:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.squad-filter-select:focus {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 0 2px rgba(0, 240, 255, 0.1);
+}
+
+.squad-filter-select option {
+  background: #1a1e2e;
   color: var(--text-primary);
 }
 
-.squad-pill-btn.active {
-  background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(139, 92, 246, 0.2));
-  border-color: var(--accent-cyan);
-  color: var(--accent-cyan);
-  box-shadow: 0 0 10px rgba(0, 240, 255, 0.15);
+.squad-filter-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.squad-filter-status .status-badge {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+.squad-filter-status .status-badge.idle { background: rgba(156, 163, 175, 0.15); color: var(--text-secondary); }
+.squad-filter-status .status-badge.running { background: rgba(0, 240, 255, 0.15); color: var(--accent-cyan); }
+.squad-filter-status .status-badge.done { background: rgba(57, 255, 20, 0.15); color: var(--accent-green); }
+.squad-filter-status .status-badge.error { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); }
+.squad-filter-status .status-badge.veto { background: rgba(245, 158, 11, 0.15); color: var(--accent-yellow); }
+
+.squad-filter-status .step-info {
+  font-size: 12px;
+  color: var(--text-secondary);
 }
 
 /* Grid de Layout do Dashboard */
