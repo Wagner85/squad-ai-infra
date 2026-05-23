@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const prefLanguageSelect = document.getElementById('pref-language');
   const prefModelSelect = document.getElementById('pref-model');
   const savePrefsBtn = document.getElementById('save-prefs-btn');
+  const agentsGrid = document.getElementById('agents-floor-grid');
 
   // Gerenciamento de Abas
   tabs.forEach(tab => {
@@ -69,6 +70,28 @@ document.addEventListener('DOMContentLoaded', () => {
       } else if (tab.dataset.tab === 'skills-tab') {
         loadSkills();
       }
+    });
+  });
+
+  // Sidebar responsiva (hamburguer)
+  const sidebar = document.getElementById('sidebar');
+  const sidebarOverlay = document.getElementById('sidebar-overlay');
+  const hamburgerBtn = document.getElementById('hamburger-btn');
+  const sidebarClose = document.getElementById('sidebar-close');
+
+  function toggleSidebar(open) {
+    sidebar.classList.toggle('open', open);
+    sidebarOverlay.classList.toggle('active', open);
+  }
+
+  hamburgerBtn.addEventListener('click', () => toggleSidebar(true));
+  sidebarClose.addEventListener('click', () => toggleSidebar(false));
+  sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
+
+  // Fecha sidebar ao clicar em nav item no mobile
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+      if (window.innerWidth <= 768) toggleSidebar(false);
     });
   });
 
@@ -97,16 +120,18 @@ document.addEventListener('DOMContentLoaded', () => {
   async function loadSquads() {
     try {
       const res = await fetch('/api/squads');
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
-      squadFilterSelect.innerHTML = '<option value="" disabled selected>Selecione uma squad...</option>';
 
-      if (data.length === 0) {
+      if (!data || data.length === 0) {
         squadFilterSelect.innerHTML = '<option value="">Nenhuma squad disponível</option>';
         squadFilterStatus.textContent = '';
         return;
       }
 
-      data.forEach((sq, idx) => {
+      squadFilterSelect.innerHTML = '';
+
+      data.forEach((sq) => {
         const squadKey = sq.name || sq.squad || 'unknown';
         squads[squadKey] = sq;
         const opt = document.createElement('option');
@@ -115,7 +140,6 @@ document.addEventListener('DOMContentLoaded', () => {
         squadFilterSelect.appendChild(opt);
       });
 
-      // Seleciona a primeira ou a ativa
       const firstKey = data[0].name || data[0].squad || 'unknown';
       if (!activeSquad || !squads[activeSquad]) {
         activeSquad = firstKey;
@@ -126,6 +150,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     } catch (e) {
       console.error('Erro ao carregar squads:', e);
+      squadFilterSelect.innerHTML = '<option value="">Erro ao carregar squads</option>';
+      squadFilterStatus.textContent = '⚠️ Erro de conexão';
     }
   }
 
@@ -324,26 +350,82 @@ document.addEventListener('DOMContentLoaded', () => {
       const res = await fetch('/api/squads');
       const data = await res.json();
       squadsListContainer.innerHTML = '';
-      
-      data.forEach(sq => {
-        const card = document.createElement('div');
-        card.className = 'squad-card';
-        card.innerHTML = `
-          <div class="squad-card-header">
-            <h3>squads/${sq.name || sq.squad}</h3>
-            <span class="badge ${sq.status}">${sq.status}</span>
-          </div>
-          <p class="squad-card-desc">${sq.description || 'Sem descrição cadastrada'}</p>
-          <div class="squad-card-meta">
-            <span class="squad-tag">Execução: sequential</span>
-            <span class="squad-tag">Passo: ${sq.step ? sq.step.current : 0}/${sq.step ? sq.step.total : 6}</span>
-          </div>
-        `;
-        squadsListContainer.appendChild(card);
-      });
 
+      if (data.length === 0) {
+        squadsListContainer.innerHTML = '<div class="empty-state"><span class="empty-icon">👥</span><p>Nenhuma squad encontrada.</p></div>';
+        return;
+      }
+
+      for (const sq of data) {
+        const name = sq.name || sq.squad;
+        try {
+          const detailRes = await fetch(`/api/squads/${name}/detail`);
+          if (!detailRes.ok) continue;
+          const detail = await detailRes.json();
+
+          const card = document.createElement('div');
+          card.className = 'squad-detail-card';
+
+          const agentIcons = (detail.agents || []).map(a =>
+            `<span class="agent-mini" title="${a.displayName}">${a.icon}</span>`
+          ).join('');
+
+          const stageCount = detail.step ? detail.step.total : 6;
+          const currentStep = detail.step ? detail.step.current : 0;
+          const progressPct = stageCount > 0 ? Math.round((currentStep / stageCount) * 100) : 0;
+
+          card.innerHTML = `
+            <div class="squad-detail-header">
+              <div class="squad-detail-title">
+                <h3>${name.toUpperCase()}</h3>
+                <span class="badge ${detail.status}">${detail.status}</span>
+              </div>
+              <span class="squad-detail-mode">${detail.execution_mode}</span>
+            </div>
+            <p class="squad-detail-desc">${detail.description}</p>
+            <div class="squad-detail-stats">
+              <div class="stat-item">
+                <span class="stat-label">Pipeline</span>
+                <span class="stat-value">${detail.pipeline}</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Agentes</span>
+                <span class="stat-value">${detail.agents.length}</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Progresso</span>
+                <span class="stat-value">${currentStep}/${stageCount} (${progressPct}%)</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Criada</span>
+                <span class="stat-value">${detail.created || '-'}</span>
+              </div>
+            </div>
+            <div class="squad-detail-progress">
+              <div class="progress-bar">
+                <div class="progress-fill" style="width:${progressPct}%"></div>
+              </div>
+            </div>
+            <div class="squad-detail-agents">
+              <span class="detail-section-label">Agentes:</span>
+              <div class="agent-mini-grid">${agentIcons || '<span class="text-muted">Nenhum</span>'}</div>
+            </div>
+            ${detail.lastRun ? `
+            <div class="squad-detail-footer">
+              <span class="last-run">Última execução: ${detail.lastRun.dir} (${new Date(detail.lastRun.date).toLocaleString('pt-BR')})</span>
+            </div>` : `
+            <div class="squad-detail-footer">
+              <span class="last-run text-muted">Nenhuma execução anterior</span>
+            </div>`}
+          `;
+          squadsListContainer.appendChild(card);
+        } catch (e) {
+          console.error(`Erro ao carregar detalhes de ${name}:`, e);
+        }
+      }
     } catch (e) {
       console.error(e);
+      squadsListContainer.innerHTML = '<div class="empty-state"><span class="empty-icon">⚠️</span><p>Erro ao carregar squads.</p></div>';
     }
   }
 

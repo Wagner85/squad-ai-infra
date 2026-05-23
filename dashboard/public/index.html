@@ -15,10 +15,13 @@
   <div class="app-container">
     
     <!-- Sidebar de Navegação -->
-    <aside class="sidebar">
-      <div class="logo-area">
-        <span class="logo-text">Squad-AI</span>
-        <span class="beta-badge">Beta</span>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-area">
+          <span class="logo-text">Squad-AI</span>
+          <span class="beta-badge">Beta</span>
+        </div>
+        <button class="sidebar-close" id="sidebar-close">&times;</button>
       </div>
       <nav class="nav-menu">
         <button class="nav-item active" data-tab="dashboard-tab">
@@ -47,15 +50,23 @@
         <div class="version-badge">v1.2.0 OS Enterprise</div>
       </div>
     </aside>
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
     <!-- Área Principal de Conteúdo -->
     <main class="main-content">
       
       <!-- Cabeçalho Principal -->
       <header class="main-header">
-        <div class="header-title">
-          <h1>Painel Operacional</h1>
-          <p class="subtitle">Orquestração de Agentes AI e Monitoramento em Tempo Real</p>
+        <div class="header-left">
+          <button class="hamburger-btn" id="hamburger-btn" aria-label="Abrir menu">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+          <div class="header-title">
+            <h1>Painel Operacional</h1>
+            <p class="subtitle">Orquestração de Agentes AI e Monitoramento em Tempo Real</p>
+          </div>
         </div>
       </header>
 
@@ -353,6 +364,11 @@
       </div>
 
     </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <span>Desenvolvido por <a href="https://wagner.aimentory.com.br/" target="_blank" rel="noopener">Wagner Oliveira</a></span>
+    </footer>
 
   </div>
 

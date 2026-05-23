@@ -167,6 +167,98 @@ app.get('/api/squads', (req, res) => {
   }
 });
 
+// API para detalhes completos de uma squad
+app.get('/api/squads/:squadName/detail', (req, res) => {
+  const { squadName } = req.params;
+  const wsPath = getActiveWorkspacePath();
+  const squadDir = path.join(wsPath, 'squads', squadName);
+
+  try {
+    if (!fs.existsSync(squadDir)) {
+      return res.status(404).json({ error: 'Squad não encontrada' });
+    }
+
+    // Lê squad.yaml
+    const yamlPath = path.join(squadDir, 'squad.yaml');
+    let yamlData = {};
+    if (fs.existsSync(yamlPath)) {
+      const raw = fs.readFileSync(yamlPath, 'utf8');
+      const lines = raw.split('\n');
+      for (const line of lines) {
+        const match = line.match(/^(\w[\w_]*)\s*:\s*(.+)$/);
+        if (match) {
+          const key = match[1].trim();
+          let val = match[2].trim();
+          if (val.startsWith('[') && val.endsWith(']')) {
+            try { val = JSON.parse(val); } catch (e) { /* string */ }
+          }
+          yamlData[key] = val;
+        }
+      }
+    }
+
+    // Lê squad-party.csv para agentes
+    const csvPath = path.join(squadDir, 'squad-party.csv');
+    let agents = [];
+    if (fs.existsSync(csvPath)) {
+      const csv = fs.readFileSync(csvPath, 'utf8');
+      const rows = csv.split('\n').filter(r => r.trim() && !r.startsWith('path,'));
+      for (const row of rows) {
+        const parts = row.split(',');
+        agents.push({
+          path: parts[0] || '',
+          displayName: parts[1] || '',
+          icon: parts[2] || '🧠',
+          cell: (parts[3] || '').trim()
+        });
+      }
+    }
+
+    // Lê state.json
+    const statePath = path.join(squadDir, 'state.json');
+    let state = { status: 'idle' };
+    if (fs.existsSync(statePath)) {
+      try {
+        state = { ...state, ...JSON.parse(fs.readFileSync(statePath, 'utf8')) };
+      } catch (e) { /* use defaults */ }
+    }
+
+    // Descobre última execução pela pasta output
+    const outputDir = path.join(squadDir, 'output');
+    let lastRun = null;
+    if (fs.existsSync(outputDir)) {
+      try {
+        const entries = fs.readdirSync(outputDir);
+        const dirs = entries.filter(e => fs.statSync(path.join(outputDir, e)).isDirectory());
+        if (dirs.length > 0) {
+          const mostRecent = dirs.sort((a, b) =>
+            fs.statSync(path.join(outputDir, b)).mtime - fs.statSync(path.join(outputDir, a)).mtime
+          )[0];
+          lastRun = {
+            dir: mostRecent,
+            date: fs.statSync(path.join(outputDir, mostRecent)).mtime.toISOString()
+          };
+        }
+      } catch (e) { /* ignore */ }
+    }
+
+    res.json({
+      name: squadName,
+      description: yamlData.description || 'Sem descrição',
+      status: state.status || 'idle',
+      step: state.step || null,
+      execution_mode: yamlData.execution_mode || 'sequential',
+      pipeline: yamlData.pipeline || 'default',
+      created: yamlData.created || null,
+      author: yamlData.author || null,
+      agents,
+      lastRun
+    });
+  } catch (e) {
+    res.status(500).json({ error: 'Erro ao carregar detalhes da squad', details: e.message });
+  }
+});
+
 // APIs para obter relatórios/outputs de estágios
 app.get('/api/squads/:squadName/reports/:stageId', (req, res) => {
   const { squadName, stageId } = req.params;

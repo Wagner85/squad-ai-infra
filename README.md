@@ -6,7 +6,7 @@
 
 | 🏷️ Versão | 📅 Data | 📝 Licença | 👤 Autor |
 |----------|---------|------------|----------|
-| 1.0.0 Minimal | 17/05/2026 | MIT | wagner85 |
+| 1.3.0 Enterprise | 23/05/2026 | MIT | wagner85 |
 
 > *"O próximo nível da operação de infraestrutura não será manual."*
 > *"Será coordenado por squads de agentes AI especializados."*
@@ -49,7 +49,7 @@ O **Squad-AI | Infraestrutura** é um:
 | Multi-workspaces | ❌ | ✅ |
 | Integrações corporativas | ❌ | ✅ |
 
-> 💡 **Nota**: Esta versão agora inclui suporte completo ao **Dashboard local em tempo real** (porta 4200), **Multi-workspaces** e **Integrações corporativas**. Para inicializar o painel, execute o comando `/squad-ai dashboard`.
+> 💡 **Nota**: Esta versão agora inclui suporte completo ao **Dashboard local em tempo real** (porta 4200) — interface visual beta com monitoramento ao vivo, visualização de pipeline, agentes, outputs, skills e gestão de segredos. Para inicializar o painel, execute `npm run dev` na pasta `dashboard/` ou utilize o comando `/squad-ai dashboard`.
 
 ---
 
@@ -93,6 +93,26 @@ O **Squad-AI | Infraestrutura** é um:
 | 🛑 Checkpoints | Aprovação manual entre etapas |
 | 📊 Outputs estruturados | Artefatos formatados |
 | 🔒 Qualidade | Bloqueio automático de inconsistências |
+
+---
+
+### 📊 Dashboard Beta (v1.3.0)
+
+> Interface visual para monitoramento e operação das squads em tempo real.
+
+| 🖥️ Recurso | 📋 Descrição |
+|------------|-------------|
+| **Dashboard** | Filtro de squads, pipeline flow com 6 estágios, sala de agentes, console de logs e visualizador de relatórios |
+| **Minhas Squads** | Cards detalhados com progresso, agentes, modo de execução, data de criação e última execução |
+| **Agentes** | Lista de agentes da squad com visualizador de prompt expandível |
+| **Outputs** | Navegação por estágios com visualização de artefatos Markdown em modal |
+| **Skills** | Grid de skills instaladas com botão "Ver SKILL.md" para inspecionar conteúdo completo |
+| **Segredos** | Gestão dinâmica de credenciais (add/edit/remove) armazenadas em `_squad-ai/config/secrets.enc.json` |
+| **Configurações** | Perfil da empresa, preferências de idioma e modelo |
+| **Responsivo** | Sidebar retrátil com menu hamburguer em telas menores |
+| **Tempo Real** | WebSocket para atualização ao vivo do estado das squads |
+
+**Acesse:** `http://localhost:4200`
 
 ---
 
@@ -193,12 +213,23 @@ Squad-AI-Infraestrutura/
 │   ├── core/               # Motor operacional
 │   ├── stacks/             # Config de ambiente
 │   └── config/             # Configurações globais
+├── dashboard/              # Dashboard Beta (porta 4200)
+│   ├── public/             # Frontend (HTML, CSS, JS)
+│   ├── server.js           # Servidor Express + WebSocket
+│   └── package.json        # Dependências
 ├── squads/                 # Squads disponíveis
 │   └── infra/             # Squad de infraestrutura
 │       ├── agents/         # 19 agentes especializados
 │       ├── pipeline/       # Pipeline de 6 etapas
 │       ├── _memory/        # Memórias da squad
 │       └── output/         # Saídas das execuções
+├── skills/                 # Skills instaladas
+│   ├── argocd/
+│   ├── grafana/
+│   ├── jira/
+│   ├── kubernetes/
+│   ├── terraform/
+│   └── zabbix/
 ├── .opencode/              # Configuração opencode
 ├── AGENTS.md               # Instruções do sistema
 ├── opencode.json           # Configuração principal
@@ -317,6 +348,20 @@ opencode .
 /squad-ai
 ```
 
+### 5️⃣ Acesse o Dashboard Beta
+
+```bash
+cd dashboard
+npm install   # apenas na primeira vez
+npm run dev   # http://localhost:4200
+```
+
+Ou pelo OpenCode:
+
+```bash
+/squad-ai dashboard
+```
+
 ---
 
 ### 5️⃣ Execute a squad
@@ -357,6 +402,7 @@ opencode .
 |------------|-------------|
 | `/squad-ai` | Menu principal interativo |
 | `/squad-ai help` | Exibir ajuda |
+| `/squad-ai dashboard` | Abrir Dashboard Beta (porta 4200) |
 | `/squad-ai list` | Listar squads disponíveis |
 | `/squad-ai run <nome>` | Executar pipeline |
 | `/squad-ai create <desc>` | Criar nova squad |
@@ -473,4 +519,4 @@ git push origin feature/nova-feature
 
 ---
 
-*Última atualização: 17/05/2026 | Squad-AI v1.0.0 Minimal*
+*Última atualização: 23/05/2026 | Squad-AI v1.3.0 Enterprise Beta*

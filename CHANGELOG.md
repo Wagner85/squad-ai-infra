@@ -5,7 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.2.0] - 2026-05-18
+## [1.3.0] - 2026-05-23
+
+### Added
+- **Dashboard Beta (`dashboard/`)**: Interface visual completa para monitoramento e operação de squads em tempo real na porta 4200
+- **7 abas funcionais**: Dashboard (filtro + pipeline flow + agentes + console + relatórios), Minhas Squads (cards detalhados), Agentes (lista com visualizador de prompt), Outputs (navegação por estágios), Skills (grid + leitor de SKILL.md), Segredos (CRUD dinâmico), Configurações (perfil + preferências)
+- **Sidebar responsiva**: Menu retrátil com hamburguer em telas ≤768px, overlay escuro e fechamento automático ao navegar
+- **Visualizador de SKILL.md**: Modal que exibe o conteúdo completo de qualquer skill instalada via endpoint `/api/skills/:id/read`
+- **Minhas Squads enriquecido**: Cards com barra de progresso, lista de agentes (ícones), pipeline, modo de execução, data de criação e última execução
+- **Footer do dashboard**: "Desenvolvido por Wagner Oliveira" com link para wagner.aimentory.com.br
+- **Badge Beta**: Indicador visual ao lado do logo Squad-AI na sidebar
+- **WebSocket em tempo real**: Atualização ao vivo do estado das squads e logs do orquestrador
+
+### Changed
+- **README.md**: Adicionada seção completa do Dashboard Beta, estrutura do projeto atualizada com `dashboard/` e `skills/`, comandos incluem `/squad-ai dashboard`, Quick Start expandido com passo de inicialização do dashboard
+- **Filtro de squads**: Substituído por select estilizado com badge de status ao vivo
+- **Endpoint `/api/squads/:name/detail`**: Novo endpoint que retorna dados completos da squad (YAML + CSV + state.json + última execução)
+
+### Fixed
+- **Filtro do dashboard preso em "Carregando..."**: Corrigido `ReferenceError: agentsGrid is not defined` que impedia `loadSquads()` de executar
+- **Secrets API**: Endpoint DELETE substituído por POST com value vazio para compatibilidade
+
+---
 
 ### Added
 - **Pasta de Skills Core**: Criação física da pasta `skills/` contendo 6 habilidades core de infraestrutura prontas para uso: `argocd`, `grafana`, `jira`, `kubernetes`, `terraform` e `zabbix`, estruturadas com YAML frontmatter e markdown instrucional.
