@@ -938,3 +938,106 @@ body {
 .tab-header-action select.ws-select {
   max-width: 300px;
 }
+
+.modal-wide .modal-content {
+  max-width: 900px;
+  width: 90vw;
+}
+
+.outputs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.output-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 16px;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.15s;
+}
+
+.output-card:hover {
+  border-color: var(--accent-cyan);
+  transform: translateY(-2px);
+}
+
+.output-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.output-card-icon {
+  font-size: 22px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.output-card-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.output-card-stage {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.output-card-agent {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.output-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.output-card-file {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--accent-cyan);
+  word-break: break-all;
+}
+
+.output-card-date {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.output-view-body {
+  max-height: 70vh;
+  overflow-y: auto;
+  margin-top: 12px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.output-view-content {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  padding: 20px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: 0;
+}
+
+.output-view-meta {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}

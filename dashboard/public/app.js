@@ -63,6 +63,8 @@ document.addEventListener('DOMContentLoaded', () => {
         loadCompanyProfileAndPrefs();
       } else if (tab.dataset.tab === 'agents-tab') {
         loadAgentsSquadSelect();
+      } else if (tab.dataset.tab === 'outputs-tab') {
+        loadOutputsSquadSelect();
       }
     });
   });
@@ -474,6 +476,115 @@ document.addEventListener('DOMContentLoaded', () => {
   function escapeHtml(text) {
     return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
+
+  // Tab: Outputs
+  const outputsContainer = document.getElementById('outputs-list-container');
+  const outputSquadSelect = document.getElementById('output-squad-select');
+  const refreshOutputsBtn = document.getElementById('refresh-outputs-btn');
+  const outputViewModal = document.getElementById('output-view-modal');
+  const closeOutputModalBtn = document.querySelector('.close-output-modal-btn');
+  const outputViewTitle = document.getElementById('output-view-title');
+  const outputViewMeta = document.getElementById('output-view-meta');
+  const outputViewContent = document.getElementById('output-view-content');
+
+  async function loadOutputsSquadSelect() {
+    try {
+      const res = await fetch('/api/squads');
+      const squads = await res.json();
+      outputSquadSelect.innerHTML = '';
+      squads.forEach(sq => {
+        const opt = document.createElement('option');
+        opt.value = sq.name || sq.squad;
+        opt.textContent = (sq.name || sq.squad).toUpperCase();
+        outputSquadSelect.appendChild(opt);
+      });
+      if (squads.length > 0) {
+        loadOutputs(squads[0].name || squads[0].squad);
+      }
+    } catch (e) {
+      outputsContainer.innerHTML = '<div class="empty-state"><span class="empty-icon">⚠️</span><p>Erro ao carregar squads.</p></div>';
+    }
+  }
+
+  outputSquadSelect.addEventListener('change', (e) => loadOutputs(e.target.value));
+  refreshOutputsBtn.addEventListener('click', () => loadOutputs(outputSquadSelect.value));
+
+  async function loadOutputs(squadName) {
+    outputsContainer.innerHTML = '<div class="empty-state"><span class="empty-icon">⏳</span><p>Carregando outputs...</p></div>';
+    try {
+      const res = await fetch(`/api/squads/${squadName}/outputs`);
+      const data = await res.json();
+
+      if (!data.outputs || data.outputs.length === 0) {
+        outputsContainer.innerHTML = '<div class="empty-state"><span class="empty-icon">📁</span><p>Nenhum output encontrado. Execute a squad para gerar resultados.</p></div>';
+        return;
+      }
+
+      let html = '<div class="outputs-grid">';
+      data.outputs.forEach(out => {
+        const icon = getAgentIcon(data.stages, out.agent);
+        html += `
+          <div class="output-card" data-squad="${squadName}" data-path="${out.file}">
+            <div class="output-card-header">
+              <span class="output-card-icon">${icon}</span>
+              <div class="output-card-info">
+                <span class="output-card-stage">${out.stageName}</span>
+                <span class="output-card-agent">${out.agent}</span>
+              </div>
+            </div>
+            <div class="output-card-meta">
+              <span class="output-card-file">${out.file}</span>
+              <span class="output-card-date">${new Date(out.modifiedAt).toLocaleString()}</span>
+            </div>
+          </div>
+        `;
+      });
+      html += '</div>';
+      outputsContainer.innerHTML = html;
+
+      document.querySelectorAll('.output-card').forEach(card => {
+        card.addEventListener('click', () => {
+          openOutputView(card.dataset.squad, card.dataset.path);
+        });
+      });
+    } catch (e) {
+      outputsContainer.innerHTML = '<div class="empty-state"><span class="empty-icon">⚠️</span><p>Erro ao carregar outputs.</p></div>';
+    }
+  }
+
+  function getAgentIcon(stages, agentId) {
+    const icons = {
+      sre: '📈', 'solution-architect': '📐', 'devops-engineer': '🔄',
+      'cyber-security': '🔐', docs: '📝', 'tech-lead': '🏛️',
+      'project-manager': '📊', 'product-owner': '🎯', 'fullstack-dev': '💻',
+      'data-engineer': '🗄️', 'ai-automation': '🤖', 'l1-support': '🎧',
+      'report-master': '📈', 'jira-reporter': '📋', 'business-exec': '💼',
+      'git-analyst': '🔀', 'obsidian-brain': '🧠', 'network-engineer': '🌐'
+    };
+    return icons[agentId] || '📄';
+  }
+
+  async function openOutputView(squadName, filePath) {
+    outputViewTitle.textContent = `Output: ${filePath}`;
+    outputViewMeta.textContent = `Squad: ${squadName.toUpperCase()}`;
+    outputViewContent.textContent = 'Carregando...';
+    outputViewModal.classList.add('active');
+
+    try {
+      const res = await fetch(`/api/squads/${squadName}/outputs/read?path=${encodeURIComponent(filePath)}`);
+      const data = await res.json();
+      outputViewContent.textContent = data.content;
+    } catch (e) {
+      outputViewContent.textContent = 'Erro ao carregar output.';
+    }
+  }
+
+  closeOutputModalBtn.addEventListener('click', () => outputViewModal.classList.remove('active'));
+
+  // Fecha modal ao clicar fora
+  outputViewModal.addEventListener('click', (e) => {
+    if (e.target === outputViewModal) outputViewModal.classList.remove('active');
+  });
 
   // Tab: Configurações & Preferências
   async function loadCompanyProfileAndPrefs() {

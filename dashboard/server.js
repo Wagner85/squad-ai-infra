@@ -256,6 +256,95 @@ app.get('/api/squads/:squadName/agents/:agentId/prompt', (req, res) => {
   }
 });
 
+// APIs para listar outputs de uma squad
+app.get('/api/squads/:squadName/outputs', (req, res) => {
+  const { squadName } = req.params;
+  const wsPath = getActiveWorkspacePath();
+  const squadDir = path.join(wsPath, 'squads', squadName);
+  const outputDir = path.join(squadDir, 'output');
+  const pipelinePath = path.join(squadDir, 'pipeline', 'pipeline.yaml');
+
+  try {
+    const stages = [];
+
+    // Lê o pipeline.yaml para mapear estágios → agentes
+    if (fs.existsSync(pipelinePath)) {
+      const yaml = fs.readFileSync(pipelinePath, 'utf8');
+      const stageBlocks = yaml.split('\n  - id:');
+      stageBlocks.shift(); // remove header
+      stageBlocks.forEach(block => {
+        const idMatch = block.match(/^([^\n]+)/);
+        const agentMatch = block.match(/agent:\s*(\S+)/);
+        const nameMatch = block.match(/name:\s*(.+)/);
+        const outputMatch = block.match(/outputFile:\s*(.+)/);
+        if (idMatch) {
+          stages.push({
+            id: idMatch[1].trim(),
+            name: nameMatch ? nameMatch[1].trim() : idMatch[1].trim(),
+            agent: agentMatch ? agentMatch[1].trim() : 'unknown',
+            outputFile: outputMatch ? outputMatch[1].trim() : null
+          });
+        }
+      });
+    }
+
+    // Escaneia outputs existentes
+    const outputs = [];
+    if (fs.existsSync(outputDir)) {
+      const walkDir = (dir, basePath = '') => {
+        fs.readdirSync(dir).forEach(file => {
+          const fullPath = path.join(dir, file);
+          const stat = fs.statSync(fullPath);
+          if (stat.isDirectory()) {
+            walkDir(fullPath, path.join(basePath, file));
+          } else if (file.endsWith('.md')) {
+            const stage = stages.find(s => s.outputFile && s.outputFile.includes(file.replace(/^\d+-/, '').replace('.md', '')));
+            outputs.push({
+              file: path.join(basePath, file).replace(/\\/g, '/'),
+              fullPath: fullPath,
+              stage: stage ? stage.id : 'unknown',
+              stageName: stage ? stage.name : file.replace('.md', ''),
+              agent: stage ? stage.agent : 'unknown',
+              modifiedAt: stat.mtime,
+              size: stat.size
+            });
+          }
+        });
+      };
+      walkDir(outputDir);
+    }
+
+    // Ordena por data (mais recente primeiro)
+    outputs.sort((a, b) => new Date(b.modifiedAt) - new Date(a.modifiedAt));
+
+    res.json({ stages, outputs });
+  } catch (e) {
+    res.status(500).json({ error: 'Erro ao listar outputs', details: e.message });
+  }
+});
+
+// APIs para obter conteúdo de um output específico
+app.get('/api/squads/:squadName/outputs/read', (req, res) => {
+  const { squadName } = req.params;
+  const filePath = req.query.path;
+  if (!filePath) {
+    return res.status(400).json({ error: 'Parâmetro path é obrigatório' });
+  }
+
+  const wsPath = getActiveWorkspacePath();
+  const fullPath = path.join(wsPath, 'squads', squadName, 'output', filePath);
+
+  try {
+    if (!fs.existsSync(fullPath)) {
+      return res.status(404).json({ error: 'Arquivo não encontrado' });
+    }
+    const content = fs.readFileSync(fullPath, 'utf8');
+    res.json({ content, file: filePath });
+  } catch (e) {
+    res.status(500).json({ error: 'Erro ao ler output', details: e.message });
+  }
+});
+
 // APIs para gerenciamento de credenciais criptografadas
 app.get('/api/secrets', (req, res) => {
   try {
