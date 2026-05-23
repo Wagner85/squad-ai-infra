@@ -49,8 +49,21 @@ body {
 .logo-area {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 40px;
+  gap: 10px;
+  padding: 20px;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.beta-badge {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(245, 158, 11, 0.2);
+  color: var(--accent-yellow);
+  border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 .logo-icon {
@@ -1166,4 +1179,34 @@ body {
   color: var(--accent-cyan);
   font-family: 'JetBrains Mono', monospace;
   font-size: 12px;
+}
+
+.view-skill-btn {
+  margin-top: 12px;
+  width: 100%;
+}
+
+.skill-view-body {
+  max-height: 70vh;
+  overflow-y: auto;
+  margin-top: 12px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.skill-view-content {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  padding: 20px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: 0;
+}
+
+.skill-view-meta {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
 }

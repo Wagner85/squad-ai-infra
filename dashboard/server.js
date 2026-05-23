@@ -453,6 +453,23 @@ app.delete('/api/skills/:id', (req, res) => {
   }
 });
 
+// API para ler o conteúdo completo do SKILL.md
+app.get('/api/skills/:id/read', (req, res) => {
+  const { id } = req.params;
+  const wsPath = getActiveWorkspacePath();
+  const skillMdPath = path.join(wsPath, 'skills', id, 'SKILL.md');
+
+  try {
+    if (!fs.existsSync(skillMdPath)) {
+      return res.status(404).json({ error: 'SKILL.md não encontrado' });
+    }
+    const content = fs.readFileSync(skillMdPath, 'utf8');
+    res.json({ content, id });
+  } catch (e) {
+    res.status(500).json({ error: 'Erro ao ler skill', details: e.message });
+  }
+});
+
 // APIs para gerenciamento de credenciais criptografadas
 app.get('/api/secrets', (req, res) => {
   try {

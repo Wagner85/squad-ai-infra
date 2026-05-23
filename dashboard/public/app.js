@@ -180,8 +180,36 @@ document.addEventListener('DOMContentLoaded', () => {
           else if (agent.status === 'veto') statusText = 'VETADO ❌';
           else if (agent.status === 'idle') statusText = 'Pronto';
           el.querySelector('.agent-status').textContent = statusText;
-        }
-      });
+    }
+  });
+
+  // Visualizar SKILL.md
+  const skillViewModal = document.getElementById('skill-view-modal');
+  const closeSkillViewBtn = document.querySelector('.close-skill-view-btn');
+  const skillViewTitle = document.getElementById('skill-view-title');
+  const skillViewMeta = document.getElementById('skill-view-meta');
+  const skillViewContent = document.getElementById('skill-view-content');
+
+  async function viewSkillMd(id) {
+    skillViewTitle.textContent = `Skill: ${id}`;
+    skillViewContent.textContent = 'Carregando...';
+    skillViewMeta.textContent = '';
+    skillViewModal.classList.add('active');
+
+    try {
+      const res = await fetch(`/api/skills/${id}/read`);
+      const data = await res.json();
+      skillViewContent.textContent = data.content;
+      skillViewMeta.textContent = `Arquivo: skills/${id}/SKILL.md`;
+    } catch (e) {
+      skillViewContent.textContent = 'Erro ao carregar SKILL.md.';
+    }
+  }
+
+  closeSkillViewBtn.addEventListener('click', () => skillViewModal.classList.remove('active'));
+  skillViewModal.addEventListener('click', (e) => {
+    if (e.target === skillViewModal) skillViewModal.classList.remove('active');
+  });
     }
 
     // Atualizar etapas do pipeline
@@ -646,10 +674,15 @@ document.addEventListener('DOMContentLoaded', () => {
               <span class="skill-version">v${skill.version}</span>
             </div>
             <div class="skill-card-cats">${cats}</div>
+            <button class="btn btn-sm view-skill-btn" data-id="${skill.id}">Ver SKILL.md</button>
           </div>
         `;
       });
       skillsContainer.innerHTML = html;
+
+      document.querySelectorAll('.view-skill-btn').forEach(btn => {
+        btn.addEventListener('click', () => viewSkillMd(btn.dataset.id));
+      });
     } catch (e) {
       skillsContainer.innerHTML = '<div class="empty-state"><span class="empty-icon">⚠️</span><p>Erro ao carregar skills.</p></div>';
     }
