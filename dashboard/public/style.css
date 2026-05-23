@@ -757,3 +757,27 @@ body {
   gap: 12px;
   margin-top: 16px;
 }
+
+.secrets-file-path {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  padding: 10px 16px;
+  background: rgba(0, 240, 255, 0.06);
+  border: 1px solid rgba(0, 240, 255, 0.15);
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.secrets-file-path .file-path-label {
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.secrets-file-path code {
+  color: var(--accent-cyan);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  word-break: break-all;
+}
